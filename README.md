@@ -1,6 +1,6 @@
-# Welcome to Remix!
+# Welcome to Medical-AI
 
-- 📖 [Remix docs](https://remix.run/docs)
+The goal of this project is to create a website where we can discover, upload and test all the models applied to medical purposes.
 
 ## Development
 
