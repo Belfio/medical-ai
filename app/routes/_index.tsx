@@ -1,48 +1,42 @@
 import type { MetaFunction } from "@remix-run/node";
+import { Link } from "@remix-run/react";
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "New Remix App" },
-    { name: "description", content: "Welcome to Remix!" },
+    { title: "Medical AI" },
+    {
+      name: "description",
+      content:
+        "A place to discover and share AI models and datasets for medical use",
+    },
   ];
 };
 
 export default function Index() {
   return (
-    <div className="font-sans p-4">
-      <h1 className="text-3xl">Welcome to Remix</h1>
-      <ul className="list-disc mt-4 pl-6 space-y-2">
+    <>
+      <h1>Ciao</h1>
+      <h2>Latest Models</h2>
+      <ul>
         <li>
-          <a
-            className="text-blue-700 underline visited:text-purple-900"
-            target="_blank"
-            href="https://remix.run/start/quickstart"
-            rel="noreferrer"
-          >
-            5m Quick Start
-          </a>
+          <Link to="/models/1">Model 1</Link>
         </li>
         <li>
-          <a
-            className="text-blue-700 underline visited:text-purple-900"
-            target="_blank"
-            href="https://remix.run/start/tutorial"
-            rel="noreferrer"
-          >
-            30m Tutorial
-          </a>
+          <Link to="/models/2">Model 2</Link>
         </li>
         <li>
-          <a
-            className="text-blue-700 underline visited:text-purple-900"
-            target="_blank"
-            href="https://remix.run/docs"
-            rel="noreferrer"
-          >
-            Remix Docs
-          </a>
+          <Link to="/models/3">Model 3</Link>
         </li>
       </ul>
-    </div>
+      <h2>Latest Datasets</h2>
+      <ul>
+        <li>
+          <Link to="/datasets/1">Dataset 1</Link>
+        </li>
+        <li>
+          <Link to="/datasets/2">Dataset 2</Link>
+        </li>
+      </ul>{" "}
+    </>
   );
 }
