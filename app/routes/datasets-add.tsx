@@ -76,10 +76,20 @@ export default function Datasets() {
           options={bodyPartsList}
           onValuesChange={setBodyParts}
         />
-
+        <input
+          type="hidden"
+          name="diseaseId"
+          value={JSON.stringify(diseases)}
+        />
+        <input
+          type="hidden"
+          name="bodyParts"
+          value={JSON.stringify(bodyParts)}
+        />
+        <input type="hidden" name="types" value={JSON.stringify(types)} />
         <h2 className="mt-8">Upload the dataset (zip format)</h2>
         <Input type="file" name="datasetFile" className="mb-12" />
-        <Button type="submit" name="addDataset">
+        <Button type="submit" name="button">
           Submit Dataset
         </Button>
       </Form>
@@ -93,22 +103,32 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     s3UploaderHandler
   );
   console.log("EGOLO formData", formData);
-
-  const fileName = formData.get("datasetFile");
-  console.log("fileName", fileName);
   const name = formData.get("name");
   const description = formData.get("description");
-  const downloadUrl = formData.get("downloadUrl");
+  const author = formData.get("author");
+  const website = formData.get("website");
+  const size = formData.get("size");
+  const datasetFile = formData.get("datasetFile");
+  const diseaseId = formData.get("diseaseId");
+  const bodyParts = formData.get("bodyParts");
+  const types = formData.get("types");
+
+  // create the object dataset to save in the table dataset
   const dataset: DatasetType = {
     createdAt: new Date().toISOString(),
     ranking: 0,
     datasetId: String(name),
     description: description as string,
-    downloadUrl: downloadUrl as string,
+    downloadUrl: datasetFile as string,
+    website: website as string,
     tConst: "metadata",
     dataType: "csv",
-    diseaseId: "1",
+    diseaseId: diseaseId as string,
+    bodyParts: bodyParts as string,
+    types: types as string,
     userId: "1",
+    author: author as string,
+    size: size as string,
   };
   await db.dataset.create(dataset);
 

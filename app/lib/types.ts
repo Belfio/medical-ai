@@ -24,6 +24,8 @@ export interface ModelType {
 
 export interface DatasetType {
   datasetId: string;
+  bodyParts: string;
+  types: string;
   createdAt: string;
   ranking: number;
   tConst: "metadata";
@@ -32,4 +34,7 @@ export interface DatasetType {
   userId: string;
   description: string;
   downloadUrl: string;
+  website: string;
+  author: string;
+  size: string;
 }
