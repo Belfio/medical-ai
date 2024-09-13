@@ -18,8 +18,15 @@ export interface ModelType {
   ranking: number;
   tConst: "metadata";
   diseaseId: string;
-  modelType: string;
+  bodyParts: string;
+  types: string;
   userId: string;
+  author: string;
+  size: string;
+  description: string;
+  downloadUrl: string;
+  website: string;
+  modelType: string;
 }
 
 export interface DatasetType {

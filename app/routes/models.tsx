@@ -17,12 +17,12 @@ export default function Models() {
       ) : (
         <>
           <ModelsFilters />
-          <div className="mt-8">
+          <div className="mt-8 flex gap-4">
+            <h2 className="text-2xl font-semibold mb-4">Available Models</h2>
             <Link to="/model-add">
-              <Button>Add Dataset</Button>
+              <Button>Submit your model</Button>
             </Link>
           </div>
-          <h2 className="text-2xl font-semibold mb-4">Available Models</h2>
 
           <ModelsTable models={models} />
         </>

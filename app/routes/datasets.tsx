@@ -9,10 +9,10 @@ export default function Datasets() {
   const { datasets } = useLoaderData<{ datasets: DatasetType[] }>();
   return (
     <>
-      <h1>Datasets</h1>
-      <div>
+      <div className="mt-2 flex gap-4">
+        <h2 className="text-2xl font-semibold mb-4">Datasets</h2>
         <Link to="/datasets-add">
-          <Button>Add Dataset</Button>
+          <Button>Add your dataset</Button>
         </Link>
       </div>
       {datasets && <DatasetsTable datasets={datasets} />}

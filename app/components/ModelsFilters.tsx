@@ -1,42 +1,57 @@
-import { Button } from "./ui/button";
+import { bodyParts, dataTypes, diseases } from "~/lib/const";
+import { MultiSelectorComplete } from "./ui/multicombo";
+import { useState } from "react";
 
 export function ModelsFilters() {
-  return (
-    <div className="flex flex-col gap-4">
-      <div className="flex flex-col gap-2">
-        <h2 className="text-lg font-medium">Filters</h2>
-        <div className="flex gap-1 items-center">
-          <h3 className="text-sm font-medium pr-4">Data type</h3>
-          <Button>Imaging</Button>
-          <Button>Text</Button>
-          <Button>Audio</Button>
-          <Button>Video</Button>
-          <Button>Signal</Button>
-          <Button>Multimodal</Button>
-        </div>
-        <div className="flex gap-1 items-center">
-          <h3 className="text-sm font-medium pr-4">Body part</h3>
-          <Button>Skin</Button>
-          <Button>Liver</Button>
-          <Button>Brain</Button>
-          <Button>Heart</Button>
-          <Button>Lung</Button>
-          <Button>Kidney</Button>
-          <Button>Muscle</Button>
-          <Button>Eye</Button>
-          <Button>Other</Button>
-        </div>
+  const [selectedDataTypes, setSelectedDataTypes] = useState<string[]>([]);
+  const [selectedBodyParts, setSelectedBodyParts] = useState<string[]>([]);
+  const [selectedDiseases, setSelectedDiseases] = useState<string[]>([]);
 
-        <div className="flex gap-1 items-center">
-          <h3 className="text-sm font-medium pr-7">Disease</h3>
-          <Button>Cancer</Button>
-          <Button>Sleep problem</Button>
-          <Button>Digestion</Button>
-          <Button>Sight</Button>
-          <Button>Gait</Button>
-          <Button>Brain injuries</Button>
-          <Button>Other</Button>
-        </div>
+  return (
+    <div className="flex flex-col gap-0 max-w-2xl">
+      <h2 className="text-lg font-medium">Filter</h2>
+      <div className="flex gap-1 items-center">
+        <h3 className="text-sm font-medium w-1/6">Data type</h3>
+        <MultiSelectorComplete
+          options={dataTypes.map((dataType) => ({
+            label: dataType,
+            value: dataType,
+          }))}
+          values={selectedDataTypes}
+          onValuesChange={(selected) => {
+            setSelectedDataTypes(selected);
+          }}
+          placeholder="Select data types"
+        />
+      </div>
+      <div className="flex gap-1 items-center">
+        <h3 className="text-sm font-medium w-1/6">Body part</h3>
+        <MultiSelectorComplete
+          options={bodyParts.map((bodyPart) => ({
+            label: bodyPart,
+            value: bodyPart,
+          }))}
+          values={selectedBodyParts}
+          onValuesChange={(selected) => {
+            setSelectedBodyParts(selected);
+          }}
+          placeholder="Select body parts"
+        />
+      </div>
+
+      <div className="flex gap-1 items-center">
+        <h3 className="text-sm font-medium w-1/6">Disease</h3>
+        <MultiSelectorComplete
+          options={diseases.map((disease) => ({
+            label: disease.name,
+            value: String(disease.id),
+          }))}
+          values={selectedDiseases}
+          onValuesChange={(selected) => {
+            setSelectedDiseases(selected);
+          }}
+          placeholder="Select diseases"
+        />
       </div>
     </div>
   );
