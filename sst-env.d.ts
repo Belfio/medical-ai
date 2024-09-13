@@ -5,9 +5,21 @@ import "sst"
 export {}
 declare module "sst" {
   export interface Resource {
+    "Datasets": {
+      "name": string
+      "type": "sst.aws.Dynamo"
+    }
     "MedicalAI": {
       "type": "sst.aws.Remix"
       "url": string
+    }
+    "Models": {
+      "name": string
+      "type": "sst.aws.Dynamo"
+    }
+    "Users": {
+      "name": string
+      "type": "sst.aws.Dynamo"
     }
   }
 }
