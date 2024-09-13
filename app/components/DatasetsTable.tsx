@@ -15,7 +15,7 @@ interface DatasetsTableProps {
 
 const DatasetsTable: React.FC<DatasetsTableProps> = ({ datasets }) => {
   return (
-    <Table>
+    <Table className="min-w-[1024px] w-full pr-8">
       <TableHeader>
         <TableRow>
           <TableHead>ID</TableHead>

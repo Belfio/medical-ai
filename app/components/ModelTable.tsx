@@ -15,7 +15,7 @@ interface ModelsTableProps {
 
 const ModelsTable: React.FC<ModelsTableProps> = ({ models }) => {
   return (
-    <Table>
+    <Table className="min-w-[1024px] w-full pr-8">
       <TableHeader>
         <TableRow>
           <TableHead>ID</TableHead>

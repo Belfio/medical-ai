@@ -23,9 +23,8 @@ export default function Models() {
             </Link>
           </div>
           <h2 className="text-2xl font-semibold mb-4">Available Models</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <ModelsTable models={models} />
-          </div>
+
+          <ModelsTable models={models} />
         </>
       )}
     </>

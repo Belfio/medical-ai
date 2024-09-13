@@ -5,6 +5,10 @@ import "sst"
 export {}
 declare module "sst" {
   export interface Resource {
+    "DatasetBucket": {
+      "name": string
+      "type": "sst.aws.Bucket"
+    }
     "Datasets": {
       "name": string
       "type": "sst.aws.Dynamo"
