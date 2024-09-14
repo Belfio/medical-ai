@@ -15,7 +15,7 @@ export default function ModelPage() {
           <h3 className="text-lg font-medium">Target Diseases</h3>
           <ul>
             {model.targetDiseases.map((disease, index) => (
-              <li key={index}>{disease}</li>
+              <li key={index}>{disease.name}</li>
             ))}
           </ul>
           <h3 className="text-lg font-medium">Input Data</h3>

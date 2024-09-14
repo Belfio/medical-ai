@@ -16,15 +16,15 @@ export default function Models() {
         <Outlet />
       ) : (
         <>
-          <ModelsFilters />
-          <div className="mt-8 flex gap-4">
-            <h2 className="text-2xl font-semibold mb-4">Available Models</h2>
+          <div className="mt-2 flex gap-4">
+            <h2 className="text-2xl font-semibold mb-4">Models</h2>
             <Link to="/model-add">
               <Button>Submit your model</Button>
             </Link>
           </div>
+          <ModelsFilters />
 
-          <ModelsTable models={models} />
+          <ModelsTable models={models} className="mt-4" />
         </>
       )}
     </>

@@ -2,6 +2,17 @@
 
 The goal of this project is to create a website where we can discover, upload and test all the models applied to medical purposes.
 
+## To do
+
+1. Make the forms more resistent, highlight errors
+1. Make the filter working in the model and dataset tables
+1. Add the in-review / approved label to each dataset and model
+1. Fill the database with datasets
+1. Fill the database with models
+1. Build the user page
+1. Build the model page
+1. Build the dataset page
+
 ## Folder Structure
 
 The project is organized into several key folders, each serving a specific purpose:

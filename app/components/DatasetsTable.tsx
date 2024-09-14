@@ -11,16 +11,22 @@ import { DatasetType } from "~/lib/types";
 
 interface DatasetsTableProps {
   datasets: DatasetType[] | [];
+  className?: string;
 }
 
-const DatasetsTable: React.FC<DatasetsTableProps> = ({ datasets }) => {
+const DatasetsTable: React.FC<DatasetsTableProps> = ({
+  datasets,
+  className,
+}) => {
   return (
-    <Table className="min-w-[1024px] w-full pr-8">
+    <Table className={`min-w-[1024px] w-full pr-8 ${className}`}>
       <TableHeader>
         <TableRow>
-          <TableHead>ID</TableHead>
           <TableHead>Name</TableHead>
-          <TableHead>Description</TableHead>
+          <TableHead>Data Types</TableHead>
+          <TableHead>Diseases</TableHead>
+          <TableHead>Body Parts</TableHead>
+          <TableHead>Size</TableHead>
           <TableHead>Author</TableHead>
           <TableHead>Download URL</TableHead>
         </TableRow>
@@ -28,10 +34,12 @@ const DatasetsTable: React.FC<DatasetsTableProps> = ({ datasets }) => {
       <TableBody>
         {datasets.map((dataset) => (
           <TableRow key={dataset.datasetId}>
-            <TableCell>{dataset.datasetId}</TableCell>
-            <TableCell>{dataset.datasetId}</TableCell>
-            <TableCell>{dataset.description}</TableCell>
-            <TableCell>{dataset.userId}</TableCell>
+            <TableCell>{dataset.name}</TableCell>
+            <TableCell>{dataset.dataType}</TableCell>
+            <TableCell>{dataset.diseaseIds}</TableCell>
+            <TableCell>{dataset.bodyParts}</TableCell>
+            <TableCell>{dataset.size}</TableCell>
+            <TableCell>{dataset.author}</TableCell>
             <TableCell>
               <a
                 href={dataset.downloadUrl}

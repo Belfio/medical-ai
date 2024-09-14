@@ -1,5 +1,19 @@
 const diseases = [
   {
+    id: 9999999,
+    name: "All",
+    description: "It aims to address all diseases",
+    category: "n/a",
+    categoryId: 0,
+  },
+  {
+    id: 0,
+    name: "Other",
+    description: "Not in the list",
+    category: "n/a",
+    categoryId: 0,
+  },
+  {
     id: 1,
     name: "Alzheimer's Disease",
     description:
@@ -153,13 +167,12 @@ const diseases = [
   },
   {
     id: 20,
-    name: "Epilepsy",
+    name: "Prostate Cancer",
     description:
-      "Epilepsy is a neurological disorder characterized by recurrent seizures caused by abnormal electrical activity in the brain.",
-    category: "Neurological Disorders",
-    categoryId: 1,
+      "Prostate Cancer is a type of cancer that develops in the prostate gland, which is part of the male reproductive system.",
+    category: "Cancers",
+    categoryId: 7,
   },
-
   {
     id: 21,
     name: "Crohn's Disease",
@@ -213,14 +226,6 @@ const diseases = [
     name: "Pneumonia",
     description:
       "Pneumonia is an infection that inflames the air sacs in one or both lungs, which may fill with fluid or pus.",
-    category: "Infectious Diseases",
-    categoryId: 3,
-  },
-  {
-    id: 28,
-    name: "Tuberculosis",
-    description:
-      "Tuberculosis is a bacterial infection that primarily affects the lungs but can spread to other parts of the body.",
     category: "Infectious Diseases",
     categoryId: 3,
   },
@@ -805,6 +810,12 @@ const diseases = [
 
 const categories = [
   {
+    categoryId: 0,
+    categoryName: "Other",
+    ICDCode: "000-000",
+    description: "Not in the list",
+  },
+  {
     categoryId: 1,
     categoryName: "Neurological Disorders",
     ICDCode: "G00-G99",
@@ -982,6 +993,7 @@ const categories = [
 ];
 
 const bodyParts = [
+  "Other",
   "Head",
   "Neck",
   "Chest",
@@ -1017,6 +1029,7 @@ const bodyParts = [
   "Hips",
 ];
 const bodyPartCategories = [
+  "Other",
   "Head and Neck",
   "Chest and Abdomen",
   "Pelvis and Lower Extremity",
@@ -1024,9 +1037,18 @@ const bodyPartCategories = [
   "Back and Spine",
   "Skin and Soft Tissue",
   "Mouth and Teeth",
+  "Internal Organs",
 ];
 
-const bodyFocus = ["Cell", "Tissue", "Organ", "System", "Body", "Whole"];
+const bodyFocus = [
+  "Other",
+  "Cell",
+  "Tissue",
+  "Organ",
+  "System",
+  "Body",
+  "Whole",
+];
 
 const dataTypes = ["Image", "Video", "Text", "Audio", "3D", "Signal", "Other"];
 

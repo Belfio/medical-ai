@@ -11,16 +11,18 @@ import { ModelType } from "~/lib/types";
 
 interface ModelsTableProps {
   models: ModelType[];
+  className?: string;
 }
 
-const ModelsTable: React.FC<ModelsTableProps> = ({ models }) => {
+const ModelsTable: React.FC<ModelsTableProps> = ({ models, className }) => {
   return (
-    <Table className="min-w-[1024px] w-full pr-8">
+    <Table className={`min-w-[1024px] w-full pr-8 ${className}`}>
       <TableHeader>
         <TableRow>
-          <TableHead>ID</TableHead>
+          <TableHead>Ranking</TableHead>
           <TableHead>Name</TableHead>
-          <TableHead>Description</TableHead>
+          <TableHead>Input Data Type</TableHead>
+          <TableHead>Target Diseases</TableHead>
           <TableHead>Author</TableHead>
           <TableHead>Download URL</TableHead>
         </TableRow>
@@ -28,10 +30,11 @@ const ModelsTable: React.FC<ModelsTableProps> = ({ models }) => {
       <TableBody>
         {models.map((model) => (
           <TableRow key={model.modelId}>
-            <TableCell>{model.modelId}</TableCell>
-            <TableCell>{model.tConst}</TableCell>
-            <TableCell>{model.diseaseId}</TableCell>
-            <TableCell>{model.userId}</TableCell>
+            <TableCell>{model.ranking}</TableCell>
+            <TableCell>{model.name}</TableCell>
+            <TableCell>{model.inputDataTypes}</TableCell>
+            <TableCell>{model.diseaseIds}</TableCell>
+            <TableCell>{model.author}</TableCell>
             <TableCell>
               <a
                 href={model.modelType}

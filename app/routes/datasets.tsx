@@ -4,6 +4,7 @@ import { DatasetType } from "~/lib/types";
 import { Link, useLoaderData } from "@remix-run/react";
 import db from "~/lib/db";
 import { Button } from "~/components/ui/button";
+import { DatasetFilters } from "~/components/DatasetFilters";
 
 export default function Datasets() {
   const { datasets } = useLoaderData<{ datasets: DatasetType[] }>();
@@ -15,7 +16,8 @@ export default function Datasets() {
           <Button>Add your dataset</Button>
         </Link>
       </div>
-      {datasets && <DatasetsTable datasets={datasets} />}
+      <DatasetFilters />
+      {datasets && <DatasetsTable datasets={datasets} className="mt-4" />}
     </>
   );
 }
