@@ -1016,7 +1016,6 @@ const bodyParts = [
   "Gallbladder",
   "Intestines",
   "Bladder",
-  "Uterus",
   "Vagina",
   "Urethra",
   "Uterus",
@@ -1050,7 +1049,16 @@ const bodyFocus = [
   "Whole",
 ];
 
-const dataTypes = ["Image", "Video", "Text", "Audio", "3D", "Signal", "Other"];
+const dataTypes = [
+  "Image",
+  "Video",
+  "Text",
+  "Audio",
+  "3D",
+  "Signal",
+  "Other",
+  "csv",
+];
 
 export {
   diseases,

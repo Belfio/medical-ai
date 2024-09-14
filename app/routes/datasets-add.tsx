@@ -3,7 +3,13 @@ import {
   unstable_parseMultipartFormData,
 } from "@remix-run/node";
 import { DatasetType } from "~/lib/types";
-import { Form, redirect } from "@remix-run/react";
+import {
+  Form,
+  json,
+  redirect,
+  useActionData,
+  useNavigation,
+} from "@remix-run/react";
 import db from "~/lib/db";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
@@ -20,11 +26,16 @@ import {
 } from "~/lib/const";
 
 export default function Datasets() {
+  const data = useActionData<typeof action>() as {
+    error: string;
+    missingFields: string[];
+  };
   const [selDiseases, setDiseases] = useState<string[]>([]);
   const [selDisCategories, setCategories] = useState<string[]>([]);
   const [selTypes, setTypes] = useState<string[]>([]);
   const [selBodyParts, setBodyParts] = useState<string[]>([]);
   const [selBodyFocus, setBodyFocus] = useState<string[]>([]);
+  const navigation = useNavigation();
 
   return (
     <>
@@ -35,12 +46,19 @@ export default function Datasets() {
       >
         <h2>Dataset Details</h2>
         {/* NAME */}
-        <Input className="" type="text" name="name" placeholder="Name" />
+        <Input
+          className=""
+          type="text"
+          name="name"
+          placeholder="Name"
+          required
+        />
         {/* DESCRIPTION */}
         <Textarea
           name="description"
           placeholder="Description"
           className="resize-none"
+          required
         />
         {/* AUTHOR */}
         <Input className="" type="text" name="author" placeholder="Author" />
@@ -142,9 +160,19 @@ export default function Datasets() {
 
         <h2 className="mt-8">Upload the dataset (zip format)</h2>
         <Input type="file" name="datasetFile" className="mb-12" />
-        <Button type="submit" name="button">
+        <Button
+          type="submit"
+          name="button"
+          disabled={navigation.state === "submitting"}
+        >
           Submit Dataset
         </Button>
+        {data && data.error && <p className="text-red-500">{data.error}</p>}
+        {data && data.missingFields && (
+          <p className="text-red-500">
+            Missing fields: {data.missingFields.join(", ")}
+          </p>
+        )}
       </Form>
     </>
   );
@@ -155,7 +183,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     request,
     s3UploaderHandler
   );
-  console.log("EGOLO formData", formData);
   const name = formData.get("name");
   const description = formData.get("description");
   const author = formData.get("author");
@@ -167,7 +194,30 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const types = formData.get("types");
   const diseaseCategory = formData.get("diseaseCategory");
   const bodyFocus = formData.get("bodyFocus");
-
+  if (
+    !name ||
+    !description ||
+    !author ||
+    !website ||
+    !size ||
+    !datasetFile ||
+    !diseaseId ||
+    !bodyParts ||
+    !types ||
+    !diseaseCategory ||
+    !bodyFocus
+  ) {
+    const missingFields = [];
+    if (!name) missingFields.push("name");
+    if (!description) missingFields.push("description");
+    if (!author) missingFields.push("author");
+    if (!website) missingFields.push("website");
+    if (!size) missingFields.push("size");
+    if (!datasetFile) missingFields.push("datasetFile");
+    if (!diseaseId) missingFields.push("diseaseId");
+    if (!bodyParts) missingFields.push("bodyParts");
+    return json({ error: "Some fields are required", missingFields });
+  }
   const dataset: DatasetType = {
     createdAt: new Date().toISOString(),
     ranking: 0,

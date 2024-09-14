@@ -1,11 +1,24 @@
 import { bodyParts, dataTypes, diseases } from "~/lib/const";
 import { MultiSelectorComplete } from "./ui/multicombo";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { FiltersType } from "~/lib/types";
 
-export function DatasetFilters() {
+export function DatasetFilters({
+  onFilterChange,
+}: {
+  onFilterChange: (filters: FiltersType) => void;
+}) {
   const [selectedDataTypes, setSelectedDataTypes] = useState<string[]>([]);
   const [selectedBodyParts, setSelectedBodyParts] = useState<string[]>([]);
   const [selectedDiseases, setSelectedDiseases] = useState<string[]>([]);
+
+  useEffect(() => {
+    onFilterChange({
+      dataTypes: selectedDataTypes,
+      bodyParts: selectedBodyParts,
+      diseases: selectedDiseases,
+    });
+  }, [selectedDataTypes, selectedBodyParts, selectedDiseases]);
 
   return (
     <div className="flex flex-col gap-0 max-w-2xl">

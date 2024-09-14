@@ -2,13 +2,16 @@ import { json, Link, Outlet, useLoaderData, useParams } from "@remix-run/react";
 import { ModelsFilters } from "~/components/ModelsFilters";
 import ModelsTable from "~/components/ModelTable";
 import { Button } from "~/components/ui/button";
+import { useFilters } from "~/hooks/useFilters";
+
 import db from "~/lib/db";
 
 import { ModelType } from "~/lib/types";
 
 export default function Models() {
   const { modelId } = useParams();
-  const { models } = useLoaderData<{ models: ModelType[] }>();
+  const { models } = useLoaderData<typeof loader>() as { models: ModelType[] };
+  const { data, handleFilterChange } = useFilters({ data: models });
 
   return (
     <>
@@ -22,9 +25,10 @@ export default function Models() {
               <Button>Submit your model</Button>
             </Link>
           </div>
-          <ModelsFilters />
 
-          <ModelsTable models={models} className="mt-4" />
+          <ModelsFilters onFilterChange={handleFilterChange} />
+
+          <ModelsTable models={data} className="mt-4" />
         </>
       )}
     </>

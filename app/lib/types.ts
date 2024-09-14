@@ -1,3 +1,5 @@
+import { bodyFocus, bodyParts, categories, dataTypes } from "./const";
+
 export interface ResponseType {
   isSuccess: boolean;
   msg: string;
@@ -19,8 +21,8 @@ export interface ModelType {
   ranking: number;
   tConst: "metadata";
   diseaseIds: string;
-  bodyParts: string;
-  inputDataTypes: string;
+  bodyParts: (typeof bodyParts)[number];
+  dataType: (typeof dataTypes)[number];
   userId: string;
   author: string;
   size: string;
@@ -30,6 +32,8 @@ export interface ModelType {
   modelType: string;
   modelFile: string;
   test?: ModelTestType;
+  datasetIds?: string;
+  diseaseCategory: (typeof categories)[number];
 }
 
 export interface ModelTestType {
@@ -44,20 +48,26 @@ export interface ModelTestType {
 
 export interface DatasetType {
   datasetId: string;
-  bodyParts: string;
   types: string;
   createdAt: string;
   ranking: number;
   tConst: "metadata";
-  dataType: string;
   diseaseIds: string;
+  bodyParts: (typeof bodyParts)[number];
+  dataType: (typeof dataTypes)[number];
   userId: string;
   description: string;
   downloadUrl: string;
   website: string;
   author: string;
   size: string;
-  diseaseCategory: string;
-  bodyFocus: string;
+  diseaseCategory: (typeof categories)[number];
+  bodyFocus: (typeof bodyFocus)[number];
   name: string;
+}
+
+export interface FiltersType {
+  dataTypes: string[];
+  bodyParts: string[];
+  diseases: string[];
 }

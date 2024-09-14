@@ -4,7 +4,7 @@ The goal of this project is to create a website where we can discover, upload an
 
 ## To do
 
-1. Make the forms more resistent, highlight errors
+1. Make the forms more resistent, highlight errors - done but not well tbh...
 1. Make the filter working in the model and dataset tables
 1. Add the in-review / approved label to each dataset and model
 1. Fill the database with datasets

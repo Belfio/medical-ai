@@ -6,8 +6,12 @@ import db from "~/lib/db";
 import { Button } from "~/components/ui/button";
 import { DatasetFilters } from "~/components/DatasetFilters";
 
+import { useFilters } from "~/hooks/useFilters";
+
 export default function Datasets() {
   const { datasets } = useLoaderData<{ datasets: DatasetType[] }>();
+  const { data, handleFilterChange } = useFilters({ data: datasets });
+
   return (
     <>
       <div className="mt-2 flex gap-4">
@@ -16,8 +20,8 @@ export default function Datasets() {
           <Button>Add your dataset</Button>
         </Link>
       </div>
-      <DatasetFilters />
-      {datasets && <DatasetsTable datasets={datasets} className="mt-4" />}
+      <DatasetFilters onFilterChange={handleFilterChange} />
+      {datasets && <DatasetsTable datasets={data} className="mt-4" />}
     </>
   );
 }
