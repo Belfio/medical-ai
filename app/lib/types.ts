@@ -33,7 +33,7 @@ export interface ModelType {
   modelFile: string;
   test?: ModelTestType;
   datasetIds?: string;
-  diseaseCategory: (typeof categories)[number];
+  diseaseCategory: string;
 }
 
 export interface ModelTestType {
@@ -61,7 +61,7 @@ export interface DatasetType {
   website: string;
   author: string;
   size: string;
-  diseaseCategory: (typeof categories)[number];
+  diseaseCategory: string;
   bodyFocus: (typeof bodyFocus)[number];
   name: string;
 }

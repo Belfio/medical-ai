@@ -1053,11 +1053,11 @@ const dataTypes = [
   "Image",
   "Video",
   "Text",
+  "CSV",
   "Audio",
   "3D",
   "Signal",
   "Other",
-  "csv",
 ];
 
 export {

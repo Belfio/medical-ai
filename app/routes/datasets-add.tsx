@@ -159,7 +159,11 @@ export default function Datasets() {
         />
 
         <h2 className="mt-8">Upload the dataset (zip format)</h2>
-        <Input type="file" name="datasetFile" className="mb-12" />
+        <Input
+          type="file"
+          name="datasetFile"
+          className="mb-12 pt-3 h-12 items-center bg-green-200"
+        />
         <Button
           type="submit"
           name="button"
