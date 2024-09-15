@@ -1,3 +1,4 @@
+import { Link } from "@remix-run/react";
 import React from "react";
 import {
   Table,
@@ -41,13 +42,9 @@ const DatasetsTable: React.FC<DatasetsTableProps> = ({
             <TableCell>{dataset.size}</TableCell>
             <TableCell>{dataset.author}</TableCell>
             <TableCell>
-              <a
-                href={dataset.downloadUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <Link to={`/datasets/${dataset.datasetId}.zip`} reloadDocument>
                 Download
-              </a>
+              </Link>
             </TableCell>
           </TableRow>
         ))}

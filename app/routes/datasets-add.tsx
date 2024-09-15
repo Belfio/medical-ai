@@ -24,6 +24,7 @@ import {
   dataTypes,
   diseases,
 } from "~/lib/const";
+import { randomId } from "~/lib/utils";
 
 export default function Datasets() {
   const data = useActionData<typeof action>() as {
@@ -225,7 +226,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const dataset: DatasetType = {
     createdAt: new Date().toISOString(),
     ranking: 0,
-    datasetId: String(name),
+    datasetId: randomId(),
     name: name as string,
     description: description as string,
     downloadUrl: datasetFile as string,

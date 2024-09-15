@@ -1,4 +1,7 @@
-import type { PutObjectCommandInput } from "@aws-sdk/client-s3";
+import type {
+  GetObjectCommandInput,
+  PutObjectCommandInput,
+} from "@aws-sdk/client-s3";
 import {
   GetObjectCommand,
   PutObjectCommand,
@@ -40,6 +43,15 @@ const uploadStreamToS3 = async (
   return key;
 };
 
+const getObjectFromS3 = async (key: string, bucketName: string) => {
+  const BUCKET_NAME = bucketName;
+  const params: GetObjectCommandInput = {
+    Bucket: BUCKET_NAME,
+    Key: key,
+  };
+  const data = await s3Client.send(new GetObjectCommand(params));
+  return data;
+};
 // The UploadHandler gives us an AsyncIterable<Uint8Array>, so we need to convert that to something the aws-sdk can use.
 // Here, we are going to convert that to a buffer to be consumed by the aws-sdk.
 async function convertToBuffer(a: AsyncIterable<Uint8Array>) {
@@ -57,6 +69,7 @@ const s3 = {
       key: string,
       contentType: string
     ) => uploadStreamToS3(data, key, contentType, Resource.DatasetBucket.name),
+    get: (key: string) => getObjectFromS3(key, Resource.DatasetBucket.name),
   },
 };
 
