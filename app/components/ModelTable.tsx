@@ -1,3 +1,4 @@
+import { Link } from "@remix-run/react";
 import React from "react";
 import {
   Table,
@@ -24,25 +25,40 @@ const ModelsTable: React.FC<ModelsTableProps> = ({ models, className }) => {
           <TableHead>Input Data Type</TableHead>
           <TableHead>Target Diseases</TableHead>
           <TableHead>Author</TableHead>
-          <TableHead>Download URL</TableHead>
+          <TableHead>Notebook</TableHead>
+          <TableHead>Model File</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {models.map((model) => (
           <TableRow key={model.modelId}>
             <TableCell>{model.ranking}</TableCell>
-            <TableCell>{model.name}</TableCell>
-            <TableCell>{model.inputDataTypes}</TableCell>
+            <TableCell>
+              <Link to={`/models/${model.modelId}`} className="underline">
+                {model.name}
+              </Link>
+            </TableCell>
+
+            <TableCell>{model.dataType}</TableCell>
             <TableCell>{model.diseaseIds}</TableCell>
             <TableCell>{model.author}</TableCell>
             <TableCell>
-              <a
-                href={model.modelType}
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                to={`/models/${model.modelId}.ipynb`}
+                reloadDocument
+                className="underline z-10"
               >
                 Download
-              </a>
+              </Link>
+            </TableCell>
+            <TableCell>
+              <Link
+                to={`/models/${model.modelId}.zip`}
+                reloadDocument
+                className="underline z-10"
+              >
+                Download
+              </Link>
             </TableCell>
           </TableRow>
         ))}

@@ -170,6 +170,7 @@ export default function Datasets() {
         <Input
           type="file"
           name="datasetFile"
+          accept=".zip"
           className="mb-12 pt-3 h-12 items-center bg-green-200"
         />
         <Button

@@ -91,6 +91,15 @@ const s3 = {
     get: (key: string) => getObjectFromS3(key, Resource.DatasetBucket.name),
     getSize: (key: string) => getSize(key, Resource.DatasetBucket.name),
   },
+  models: {
+    upload: (
+      data: AsyncIterable<Uint8Array>,
+      key: string,
+      contentType: string
+    ) => uploadStreamToS3(data, key, contentType, Resource.ModelBucket.name),
+    get: (key: string) => getObjectFromS3(key, Resource.ModelBucket.name),
+    getSize: (key: string) => getSize(key, Resource.ModelBucket.name),
+  },
 };
 
 export default s3;

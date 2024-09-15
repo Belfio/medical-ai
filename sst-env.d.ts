@@ -17,6 +17,10 @@ declare module "sst" {
       "type": "sst.aws.Remix"
       "url": string
     }
+    "ModelBucket": {
+      "name": string
+      "type": "sst.aws.Bucket"
+    }
     "Models": {
       "name": string
       "type": "sst.aws.Dynamo"

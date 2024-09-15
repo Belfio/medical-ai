@@ -35,7 +35,11 @@ const DatasetsTable: React.FC<DatasetsTableProps> = ({
       <TableBody>
         {datasets.map((dataset) => (
           <TableRow key={dataset.datasetId}>
-            <TableCell>{dataset.name}</TableCell>
+            <TableCell>
+              <Link to={`/datasets/${dataset.datasetId}`} className="underline">
+                {dataset.name}
+              </Link>
+            </TableCell>
             <TableCell>{dataset.dataType}</TableCell>
             <TableCell>{dataset.diseaseIds}</TableCell>
             <TableCell>{dataset.bodyParts}</TableCell>

@@ -23,7 +23,6 @@ import { s3UploaderHandler } from "~/upload.server";
 import { bodyParts, categories, dataTypes, diseases } from "~/lib/const";
 import { CircleAlert } from "lucide-react";
 import { randomId } from "~/lib/utils";
-import s3 from "~/lib/s3";
 
 export default function ModelAdd() {
   const data = useActionData<typeof action>() as {
@@ -163,13 +162,18 @@ export default function ModelAdd() {
         />
         <input
           type="hidden"
-          name="types"
+          name="dataType"
           value={JSON.stringify(typesSelected)}
         />
         <input
           type="hidden"
-          name="types"
+          name="datasetIds"
           value={JSON.stringify(selectedDatasets)}
+        />
+        <input
+          type="hidden"
+          name="diseaseCategories"
+          value={JSON.stringify(selDisCategories)}
         />
         <h1 className="mt-8">The model</h1>
         <h2 className="mt-8">Upload model data in zip format (optional)</h2>
@@ -178,6 +182,7 @@ export default function ModelAdd() {
           type="file"
           name="modelFile"
           className="mb-2 pt-3 h-12 items-center bg-yellow-200"
+          accept=".zip"
         />
         <h2 className="mt-0">Upload Jupyter Notebook</h2>
         {/* Notebook File */}
@@ -186,6 +191,7 @@ export default function ModelAdd() {
           name="notebookFile"
           className="mb-12 pt-3 h-12 items-center bg-yellow-200"
           required
+          accept=".ipynb"
         />
         <Button type="submit" name="button">
           Submit
@@ -208,38 +214,34 @@ export const loader = async () => {
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const modelId = randomId();
-  const modelFileName = `model-${modelId}.zip`;
-
-  console.log("modelFileName", modelFileName);
-
+  console.log("model id", modelId);
   const s3uploaderWithId: UploadHandler = (props: UploadHandlerPart) =>
-    s3UploaderHandler(props, modelFileName);
+    s3UploaderHandler(props, modelId);
   const formData = await unstable_parseMultipartFormData(
     request,
     s3uploaderWithId
   );
-  console.log(" formData", formData);
   const name = formData.get("name");
   const description = formData.get("description");
   const author = formData.get("author");
   const website = formData.get("website");
-  const size = s3.datasets.getSize(modelFileName);
+  const size = formData.get("size");
   const diseaseIds = formData.get("diseaseId");
   const diseaseCategories = formData.get("diseaseCategories");
   const bodyParts = formData.get("bodyParts");
-  const types = formData.get("types");
   const notebookFile = formData.get("notebookFile");
   const modelFile = formData.get("modelFile");
-  const selectedDatasets = formData.get("selectedDatasets");
+  const dataType = formData.get("dataType");
+  const datasetIds = formData.get("datasetIds");
   if (
     !name ||
     !description ||
     !author ||
     !notebookFile ||
-    !modelFile ||
-    !selectedDatasets ||
     !diseaseIds ||
-    !diseaseCategories
+    !diseaseCategories ||
+    !dataType ||
+    !datasetIds
   ) {
     const missingFields = [];
     if (!name) missingFields.push("name");
@@ -248,8 +250,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     if (!diseaseIds) missingFields.push("diseaseIds");
     if (!diseaseCategories) missingFields.push("diseaseCategories");
     if (!notebookFile) missingFields.push("notebookFile");
-    if (!modelFile) missingFields.push("modelFile");
-    if (!selectedDatasets) missingFields.push("selectedDatasets");
+    if (!dataType) missingFields.push("dataType");
+    if (!datasetIds) missingFields.push("datasetIds");
     return json(
       { error: `Missing fields: ${missingFields.join(", ")}` },
       { status: 400 }
@@ -262,20 +264,19 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     name: name as string,
     description: description as string,
     createdAt: new Date().toISOString(),
-    dataType: types as string,
     ranking: 0,
     notebookFile: notebookFile as string,
     modelFile: modelFile as string,
     website: website as string,
     tConst: "metadata",
-    modelType: "csv",
     diseaseIds: diseaseIds as string,
     bodyParts: bodyParts as string,
     userId: "1",
     author: author as string,
     size: size as string,
-    datasetIds: selectedDatasets as string,
+    datasetIds: datasetIds as string,
     diseaseCategory: diseaseCategories as string,
+    dataType: dataType as string,
   };
   await db.model.create(model);
 

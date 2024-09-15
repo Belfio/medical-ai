@@ -1,12 +1,12 @@
-import type { UploadHandler, UploadHandlerPart } from "@remix-run/node";
+import type { UploadHandlerPart } from "@remix-run/node";
 import s3 from "./lib/s3";
 
 export const s3UploaderHandler: <T extends UploadHandlerPart>(
   props: T,
   modelId: string
-) => Promise<string> = async (props, s3FileName) => {
+) => Promise<string> = async (props, valueId) => {
   console.log("props", props);
-  console.log("modelId", s3FileName);
+  console.log("modelId", valueId);
   const { filename, data, contentType } = props;
 
   if (!filename || !data || !contentType) {
@@ -25,6 +25,22 @@ export const s3UploaderHandler: <T extends UploadHandlerPart>(
 
     return bufferString;
   }
-
+  let s3FileName = filename;
+  switch (props.name) {
+    case "modelFile":
+      s3FileName = `model-${valueId}.zip`;
+      return await s3.models.upload(data, s3FileName, contentType);
+      break;
+    case "notebookFile":
+      s3FileName = `notebook-${valueId}.ipynb`;
+      return await s3.models.upload(data, s3FileName, contentType);
+      break;
+    case "datasetFile":
+      s3FileName = `datasetFile-${valueId}.zip`;
+      return await s3.datasets.upload(data, s3FileName, contentType);
+      break;
+    default:
+      break;
+  }
   return await s3.datasets.upload(data, s3FileName, contentType);
 };

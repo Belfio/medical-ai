@@ -92,9 +92,10 @@ export default $config({
         },
       },
     });
-    const bucket = new sst.aws.Bucket("DatasetBucket");
+    const datasetBucket = new sst.aws.Bucket("DatasetBucket");
+    const modeBucket = new sst.aws.Bucket("ModelBucket");
     const site = new sst.aws.Remix("MedicalAI", {
-      link: [datasetTable, modelTable, userTable, bucket],
+      link: [datasetTable, modelTable, userTable, datasetBucket, modeBucket],
     });
 
     return {
