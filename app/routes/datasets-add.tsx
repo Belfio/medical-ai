@@ -1,6 +1,8 @@
 import {
   ActionFunctionArgs,
   unstable_parseMultipartFormData,
+  UploadHandler,
+  UploadHandlerPart,
 } from "@remix-run/node";
 import { DatasetType } from "~/lib/types";
 import {
@@ -136,7 +138,12 @@ export default function Datasets() {
           name="size"
           placeholder="Population size, how many humans"
         />
-
+        <Textarea
+          name="instructions"
+          placeholder="Important! Explain how to to use the data"
+          required
+          className="resize-none"
+        />
         <input
           type="hidden"
           name="diseaseId"
@@ -184,10 +191,17 @@ export default function Datasets() {
 }
 
 export const action = async ({ request }: ActionFunctionArgs) => {
+  const datasetId = randomId();
+
+  const datasetFileName = `dataset-${datasetId}.zip`;
+
+  const s3uploaderWithId: UploadHandler = (props: UploadHandlerPart) =>
+    s3UploaderHandler(props, datasetFileName);
   const formData = await unstable_parseMultipartFormData(
     request,
-    s3UploaderHandler
+    s3uploaderWithId
   );
+
   const name = formData.get("name");
   const description = formData.get("description");
   const author = formData.get("author");
@@ -199,40 +213,44 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const types = formData.get("types");
   const diseaseCategory = formData.get("diseaseCategory");
   const bodyFocus = formData.get("bodyFocus");
+  const instructions = formData.get("instructions");
   if (
     !name ||
     !description ||
     !author ||
-    !website ||
     !size ||
     !datasetFile ||
     !diseaseId ||
     !bodyParts ||
     !types ||
     !diseaseCategory ||
-    !bodyFocus
+    !bodyFocus ||
+    !instructions
   ) {
     const missingFields = [];
     if (!name) missingFields.push("name");
     if (!description) missingFields.push("description");
     if (!author) missingFields.push("author");
-    if (!website) missingFields.push("website");
     if (!size) missingFields.push("size");
     if (!datasetFile) missingFields.push("datasetFile");
     if (!diseaseId) missingFields.push("diseaseId");
     if (!bodyParts) missingFields.push("bodyParts");
+    if (!types) missingFields.push("types");
+    if (!diseaseCategory) missingFields.push("diseaseCategory");
+    if (!bodyFocus) missingFields.push("bodyFocus");
+    if (!instructions) missingFields.push("instructions");
     return json({ error: "Some fields are required", missingFields });
   }
   const dataset: DatasetType = {
     createdAt: new Date().toISOString(),
     ranking: 0,
-    datasetId: randomId(),
+    datasetId: datasetId,
     name: name as string,
     description: description as string,
     downloadUrl: datasetFile as string,
     website: website as string,
     tConst: "metadata",
-    dataType: "csv",
+    dataType: types as string,
     diseaseIds: diseaseId as string,
     bodyParts: bodyParts as string,
     types: types as string,
@@ -241,6 +259,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     size: size as string,
     diseaseCategory: diseaseCategory as string,
     bodyFocus: bodyFocus as string,
+    instructions: instructions as string,
   };
   await db.dataset.create(dataset);
 

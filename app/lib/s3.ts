@@ -9,6 +9,7 @@ import {
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { Resource } from "sst";
+import { Readable } from "stream";
 
 const s3Client = new S3Client({ region: "us-east-1" });
 
@@ -50,6 +51,24 @@ const getObjectFromS3 = async (key: string, bucketName: string) => {
     Key: key,
   };
   const data = await s3Client.send(new GetObjectCommand(params));
+  // Read the stream completely
+  const stream = data.Body as Readable;
+  const chunks: Uint8Array[] = [];
+  for await (const chunk of stream) {
+    chunks.push(chunk);
+  }
+  const fileContent = Buffer.concat(chunks);
+
+  return fileContent;
+};
+
+const getSize = async (key: string, bucketName: string) => {
+  const BUCKET_NAME = bucketName;
+  const params: GetObjectCommandInput = {
+    Bucket: BUCKET_NAME,
+    Key: key,
+  };
+  const data = await s3Client.send(new GetObjectCommand(params));
   return data;
 };
 // The UploadHandler gives us an AsyncIterable<Uint8Array>, so we need to convert that to something the aws-sdk can use.
@@ -70,6 +89,7 @@ const s3 = {
       contentType: string
     ) => uploadStreamToS3(data, key, contentType, Resource.DatasetBucket.name),
     get: (key: string) => getObjectFromS3(key, Resource.DatasetBucket.name),
+    getSize: (key: string) => getSize(key, Resource.DatasetBucket.name),
   },
 };
 

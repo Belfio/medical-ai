@@ -1,4 +1,4 @@
-import { bodyFocus, bodyParts, categories, dataTypes } from "./const";
+import { bodyFocus, bodyParts, dataTypes } from "./const";
 
 export interface ResponseType {
   isSuccess: boolean;
@@ -64,6 +64,7 @@ export interface DatasetType {
   diseaseCategory: string;
   bodyFocus: (typeof bodyFocus)[number];
   name: string;
+  instructions: string;
 }
 
 export interface FiltersType {

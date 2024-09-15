@@ -1,6 +1,8 @@
 import {
   ActionFunctionArgs,
   unstable_parseMultipartFormData,
+  UploadHandler,
+  UploadHandlerPart,
 } from "@remix-run/node";
 import { DatasetType, ModelType } from "~/lib/types";
 import {
@@ -20,6 +22,8 @@ import { Textarea } from "~/components/ui/textarea";
 import { s3UploaderHandler } from "~/upload.server";
 import { bodyParts, categories, dataTypes, diseases } from "~/lib/const";
 import { CircleAlert } from "lucide-react";
+import { randomId } from "~/lib/utils";
+import s3 from "~/lib/s3";
 
 export default function ModelAdd() {
   const data = useActionData<typeof action>() as {
@@ -114,13 +118,6 @@ export default function ModelAdd() {
           }
           onValuesChange={setDiseases}
         />
-        {/* Size */}
-        <Input
-          className=""
-          type="text"
-          name="size"
-          placeholder="Population size"
-        />
 
         <h2 className="mt-8">Data information</h2>
         {/* Datasets */}
@@ -210,16 +207,23 @@ export const loader = async () => {
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
+  const modelId = randomId();
+  const modelFileName = `model-${modelId}.zip`;
+
+  console.log("modelFileName", modelFileName);
+
+  const s3uploaderWithId: UploadHandler = (props: UploadHandlerPart) =>
+    s3UploaderHandler(props, modelFileName);
   const formData = await unstable_parseMultipartFormData(
     request,
-    s3UploaderHandler
+    s3uploaderWithId
   );
   console.log(" formData", formData);
   const name = formData.get("name");
   const description = formData.get("description");
   const author = formData.get("author");
   const website = formData.get("website");
-  const size = formData.get("size");
+  const size = s3.datasets.getSize(modelFileName);
   const diseaseIds = formData.get("diseaseId");
   const diseaseCategories = formData.get("diseaseCategories");
   const bodyParts = formData.get("bodyParts");
@@ -254,11 +258,11 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
   // create the object dataset to save in the table dataset
   const model: ModelType = {
-    modelId: String(name),
+    modelId: modelId,
     name: name as string,
     description: description as string,
     createdAt: new Date().toISOString(),
-    inputDataTypes: types as string,
+    dataType: types as string,
     ranking: 0,
     notebookFile: notebookFile as string,
     modelFile: modelFile as string,
@@ -271,7 +275,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     author: author as string,
     size: size as string,
     datasetIds: selectedDatasets as string,
-    diseaseCategories: diseaseCategories as string,
+    diseaseCategory: diseaseCategories as string,
   };
   await db.model.create(model);
 
