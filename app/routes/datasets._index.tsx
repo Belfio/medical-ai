@@ -1,7 +1,7 @@
 import DatasetsTable from "~/components/DatasetsTable";
 import { json } from "@remix-run/node";
 import { DatasetType } from "~/lib/types";
-import { Link, Outlet, useLoaderData, useParams } from "@remix-run/react";
+import { Link, useLoaderData } from "@remix-run/react";
 import db from "~/lib/db";
 import { Button } from "~/components/ui/button";
 import { DatasetFilters } from "~/components/DatasetFilters";

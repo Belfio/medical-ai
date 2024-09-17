@@ -1,4 +1,4 @@
-import { json, Link, Outlet, useLoaderData, useParams } from "@remix-run/react";
+import { json, Link, useLoaderData } from "@remix-run/react";
 import { ModelsFilters } from "~/components/ModelsFilters";
 import ModelsTable from "~/components/ModelTable";
 import { Button } from "~/components/ui/button";
