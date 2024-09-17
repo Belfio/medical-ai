@@ -25,6 +25,7 @@ export default function Diseases() {
         }))}
         value={selectedDisease?.diseaseId || ""}
         setValue={setSelectedDisease}
+        className="w-1/3"
       />
 
       {datasets && (
@@ -41,8 +42,10 @@ export default function Diseases() {
 
 export const loader = async () => {
   try {
-    const datasets: DatasetType[] = await db.dataset.getByRanking();
-    return json({ datasets, diseases: [], models: [] });
+    const datasets: DatasetType[] = await db.dataset.getByLatest();
+    const diseases: DiseaseType[] = await db.disease.getNItems(50);
+    const models: ModelType[] = await db.model.getByLatest();
+    return json({ datasets, diseases, models });
   } catch (error) {
     console.error(error);
     return json({ error: "Failed to fetch" }, { status: 500 });

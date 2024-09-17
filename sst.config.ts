@@ -3,7 +3,7 @@
 export default $config({
   app(input) {
     return {
-      name: "medical-ai",
+      name: "biomeddb",
       removal: input?.stage === "production" ? "retain" : "remove",
       home: "aws",
       providers: { cloudflare: "5.38.0", aws: "6.52.0" },
@@ -76,6 +76,20 @@ export default $config({
         },
       },
     });
+    const diseaseTable = new sst.aws.Dynamo("Diseases", {
+      fields: {
+        diseaseId: "string",
+        createdAt: "string",
+        tConst: "string",
+      },
+      primaryIndex: { hashKey: "diseaseId" },
+      globalIndexes: {
+        CreationIndex: {
+          hashKey: "tConst",
+          rangeKey: "createdAt",
+        },
+      },
+    });
     const userTable = new sst.aws.Dynamo("Users", {
       fields: {
         userId: "string",
@@ -93,12 +107,20 @@ export default $config({
     const datasetBucket = new sst.aws.Bucket("DatasetBucket");
     const modeBucket = new sst.aws.Bucket("ModelBucket");
     const site = new sst.aws.Remix("MedicalAI", {
-      link: [datasetTable, modelTable, userTable, datasetBucket, modeBucket],
-      domain: {
-        name: "biomeddb.com",
-        dns: sst.cloudflare.dns(),
-      },
+      link: [
+        datasetTable,
+        modelTable,
+        userTable,
+        datasetBucket,
+        modeBucket,
+        diseaseTable,
+      ],
+      // domain: {
+      //   name: "biomeddb.com",
+      //   dns: sst.cloudflare.dns(),
+      // },
     });
+
     return {
       app: "medical-ai",
       siteUrl: site.url,

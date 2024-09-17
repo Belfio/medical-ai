@@ -27,7 +27,6 @@ const DiseasesTable: React.FC<DatasetsTableProps> = ({
     <Table className={`min-w-[1024px] w-full pr-8 ${className}`}>
       <TableHeader>
         <TableRow>
-          <TableHead>Id</TableHead>
           <TableHead>Name</TableHead>
           <TableHead>Description</TableHead>
           <TableHead>Category</TableHead>

@@ -8,7 +8,7 @@ import {
 } from "@aws-sdk/lib-dynamodb";
 
 import { Resource } from "sst";
-import { DatasetType, ModelType, UserType } from "./types";
+import { DatasetType, DiseaseType, ModelType, UserType } from "./types";
 
 const client = DynamoDBDocumentClient.from(new DynamoDBClient({}));
 
@@ -62,6 +62,221 @@ const getNItems = async (
     return { items: null };
   }
 };
+
+const queryItems = async (
+  tableName: string,
+  indexName: string,
+  valueKey: string,
+  value: string | number | boolean,
+  limit?: number,
+  lastEvaluatedKey?: any
+): Promise<{ items: any[] | null; lastEvaluatedKey?: any }> => {
+  try {
+    const command = new QueryCommand({
+      TableName: tableName,
+      IndexName: indexName,
+      KeyConditionExpression: `${valueKey} = :valueKey`,
+      ExpressionAttributeValues: {
+        ":valueKey": value,
+      },
+      Limit: limit,
+      ExclusiveStartKey: lastEvaluatedKey,
+    });
+    console.log("queryItems command", command);
+    const data = await client.send(command);
+
+    if (!data.Items) return { items: null };
+    return { items: data.Items, lastEvaluatedKey: data.LastEvaluatedKey };
+  } catch (error) {
+    console.log("getNItems error", error);
+    return { items: null };
+  }
+};
+
+type responseType = {
+  isSuccess: boolean;
+  msg: string;
+};
+const createItem = async (
+  tableName: string,
+  item: any
+): Promise<responseType> => {
+  // console.log("createItem...");
+  const command = new PutCommand({
+    TableName: tableName,
+    Item: item,
+  });
+
+  try {
+    await client.send(command);
+  } catch (error) {
+    console.log("createItem error", error);
+    return { isSuccess: false, msg: "error" };
+  }
+
+  return { isSuccess: true, msg: "ok" };
+};
+
+const deleteItem = async (
+  tableName: string,
+  idObj: any
+): Promise<responseType> => {
+  // console.log("deleteItem", tableName, idObj);
+
+  const command = new DeleteCommand({
+    TableName: tableName,
+    Key: {
+      ...idObj,
+    },
+  });
+
+  // // console.log("deleteItem", command);
+  try {
+    await client.send(command);
+  } catch (error) {
+    return { isSuccess: false, msg: "error" };
+  }
+  // console.log("geleteItem data", data);
+
+  return { isSuccess: true, msg: "deleted" };
+};
+
+const db = {
+  user: {
+    create: async (userProfile: UserType) => {
+      const response = await createItem(Resource.Users.name, userProfile);
+      if (!response.isSuccess) {
+        throw new Error(`Error creating user: ${response.msg}`);
+      }
+      return response;
+    },
+    get: async (userId: string): Promise<UserType> => {
+      const user = (await getItem(Resource.Users.name, {
+        userId,
+      })) as UserType;
+
+      return user;
+    },
+    delete: async (userId: string) => {
+      await deleteItem(Resource.Users.name, {
+        userId,
+      });
+    },
+  },
+  model: {
+    create: async (model: ModelType) => {
+      const response = await createItem(Resource.Models.name, model);
+      if (!response.isSuccess) {
+        throw new Error(`Error creating model: ${response.msg}`);
+      }
+      return response;
+    },
+    get: async (modelId: string): Promise<ModelType> => {
+      const model = (await getItem(Resource.Models.name, {
+        modelId,
+      })) as ModelType;
+
+      return model;
+    },
+    getByRanking: async (): Promise<ModelType[]> => {
+      const models = (await getNItems(
+        Resource.Models.name,
+        "RankingIndex",
+        50
+      )) as { items: ModelType[] | null; lastEvaluatedKey?: any };
+      return models.items || [];
+    },
+    getByLatest: async (): Promise<ModelType[]> => {
+      const models = (await getNItems(
+        Resource.Models.name,
+        "CreatedAtIndex",
+        50
+      )) as { items: ModelType[] | null; lastEvaluatedKey?: any };
+      return models.items || [];
+    },
+
+    delete: async (modelId: string) => {
+      await deleteItem(Resource.Models.name, {
+        modelId,
+      });
+    },
+  },
+  dataset: {
+    create: async (dataset: DatasetType) => {
+      const response = await createItem(Resource.Datasets.name, dataset);
+      if (!response.isSuccess) {
+        throw new Error(`Error creating dataset: ${response.msg}`);
+      }
+      return response;
+    },
+    get: async (datasetId: string): Promise<DatasetType> => {
+      const dataset = (await getItem(Resource.Datasets.name, {
+        datasetId,
+      })) as DatasetType;
+
+      return dataset;
+    },
+    getByRanking: async (): Promise<DatasetType[]> => {
+      const datasets = (await getNItems(
+        Resource.Datasets.name,
+        "RankingIndex",
+        50
+      )) as { items: DatasetType[] | null; lastEvaluatedKey?: any };
+      return datasets.items || [];
+    },
+    getByLatest: async (): Promise<DatasetType[]> => {
+      const datasets = (await getNItems(
+        Resource.Datasets.name,
+        "CreatedAtIndex",
+        50
+      )) as { items: DatasetType[] | null; lastEvaluatedKey?: any };
+      return datasets.items || [];
+    },
+    delete: async (datasetId: string) => {
+      await deleteItem(Resource.Datasets.name, {
+        datasetId,
+      });
+    },
+  },
+  disease: {
+    getByApproved: async (): Promise<DiseaseType[]> => {
+      const diseases = (await queryItems(
+        Resource.Diseases.name,
+        "ApprovedIndex",
+        "approved",
+        "true"
+      )) as { items: DiseaseType[] | null; lastEvaluatedKey?: any };
+      return diseases.items || [];
+    },
+    getNItems: async (n = 50): Promise<DiseaseType[]> => {
+      const diseases = (await getNItems(
+        Resource.Diseases.name,
+        "CreationIndex",
+        n
+      )) as { items: DiseaseType[] | null; lastEvaluatedKey?: any };
+      return diseases.items || [];
+    },
+    create: async (disease: DiseaseType) => {
+      try {
+        const response = await createItem(Resource.Diseases.name, disease);
+        if (!response.isSuccess) {
+          throw new Error(`Error creating disease: ${response.msg}`);
+        }
+        return response;
+      } catch (error) {
+        console.log("create disease error", error);
+        throw new Error(`Error creating disease: ${error}`);
+      }
+    },
+    delete: async (diseaseId: string) => {
+      await deleteItem(Resource.Diseases.name, {
+        diseaseId,
+      });
+    },
+  },
+};
+
+export default db;
 
 // const queryStatus = async (
 //   tableName: string,
@@ -343,159 +558,3 @@ const getNItems = async (
 
 //   return items;
 // };
-type responseType = {
-  isSuccess: boolean;
-  msg: string;
-};
-const createItem = async (
-  tableName: string,
-  item: any
-): Promise<responseType> => {
-  // console.log("createItem...");
-
-  const command = new PutCommand({
-    TableName: tableName,
-    Item: item,
-  });
-
-  try {
-    await client.send(command);
-  } catch (error) {
-    console.log("createItem error", error);
-    return { isSuccess: false, msg: "error" };
-  }
-
-  return { isSuccess: true, msg: "ok" };
-};
-
-const deleteItem = async (
-  tableName: string,
-  idObj: any
-): Promise<responseType> => {
-  // console.log("deleteItem", tableName, idObj);
-
-  const command = new DeleteCommand({
-    TableName: tableName,
-    Key: {
-      ...idObj,
-    },
-  });
-
-  // // console.log("deleteItem", command);
-  try {
-    await client.send(command);
-  } catch (error) {
-    return { isSuccess: false, msg: "error" };
-  }
-  // console.log("geleteItem data", data);
-
-  return { isSuccess: true, msg: "deleted" };
-};
-
-const db = {
-  user: {
-    create: async (userProfile: UserType) => {
-      const response = await createItem(Resource.Users.name, userProfile);
-      if (!response.isSuccess) {
-        throw new Error(`Error creating user: ${response.msg}`);
-      }
-      return response;
-    },
-    get: async (userId: string): Promise<UserType> => {
-      const user = (await getItem(Resource.Users.name, {
-        userId,
-      })) as UserType;
-
-      return user;
-    },
-    delete: async (userId: string) => {
-      await deleteItem(Resource.Users.name, {
-        userId,
-      });
-    },
-  },
-  model: {
-    create: async (model: ModelType) => {
-      const response = await createItem(Resource.Models.name, model);
-      if (!response.isSuccess) {
-        throw new Error(`Error creating model: ${response.msg}`);
-      }
-      return response;
-    },
-    get: async (modelId: string): Promise<ModelType> => {
-      const model = (await getItem(Resource.Models.name, {
-        modelId,
-      })) as ModelType;
-
-      return model;
-    },
-    getByRanking: async (): Promise<ModelType[]> => {
-      const models = (await getNItems(
-        Resource.Models.name,
-        "RankingIndex",
-        50
-      )) as { items: ModelType[] | null; lastEvaluatedKey?: any };
-      return models.items || [];
-    },
-    getByLatest: async (): Promise<ModelType[]> => {
-      const models = (await getNItems(
-        Resource.Models.name,
-        "CreatedAtIndex",
-        50
-      )) as { items: ModelType[] | null; lastEvaluatedKey?: any };
-      return models.items || [];
-    },
-    // getByRanking: async (): Promise<ModelType[]> => {
-    //   const models = (await queryItems(
-    //     Resource.Models.name,
-    //     "metadata",
-    //     "tConst"
-    //   )) as ModelType[];
-    //   return models;
-    // },
-    delete: async (modelId: string) => {
-      await deleteItem(Resource.Models.name, {
-        modelId,
-      });
-    },
-  },
-  dataset: {
-    create: async (dataset: DatasetType) => {
-      const response = await createItem(Resource.Datasets.name, dataset);
-      if (!response.isSuccess) {
-        throw new Error(`Error creating dataset: ${response.msg}`);
-      }
-      return response;
-    },
-    get: async (datasetId: string): Promise<DatasetType> => {
-      const dataset = (await getItem(Resource.Datasets.name, {
-        datasetId,
-      })) as DatasetType;
-
-      return dataset;
-    },
-    getByRanking: async (): Promise<DatasetType[]> => {
-      const datasets = (await getNItems(
-        Resource.Datasets.name,
-        "RankingIndex",
-        50
-      )) as { items: DatasetType[] | null; lastEvaluatedKey?: any };
-      return datasets.items || [];
-    },
-    getByLatest: async (): Promise<DatasetType[]> => {
-      const datasets = (await getNItems(
-        Resource.Datasets.name,
-        "CreatedAtIndex",
-        50
-      )) as { items: DatasetType[] | null; lastEvaluatedKey?: any };
-      return datasets.items || [];
-    },
-    delete: async (datasetId: string) => {
-      await deleteItem(Resource.Datasets.name, {
-        datasetId,
-      });
-    },
-  },
-};
-
-export default db;

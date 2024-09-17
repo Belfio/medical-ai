@@ -13,6 +13,10 @@ declare module "sst" {
       "name": string
       "type": "sst.aws.Dynamo"
     }
+    "Diseases": {
+      "name": string
+      "type": "sst.aws.Dynamo"
+    }
     "MedicalAI": {
       "type": "sst.aws.Remix"
       "url": string

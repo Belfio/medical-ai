@@ -1,5 +1,5 @@
 {
-  "name": "medical-ai",
+  "name": "biomeddb",
   "private": true,
   "sideEffects": false,
   "type": "module",
