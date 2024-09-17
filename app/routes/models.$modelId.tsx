@@ -1,9 +1,10 @@
 import { LoaderFunctionArgs } from "@remix-run/node";
 import { json, useLoaderData } from "@remix-run/react";
 import db from "~/lib/db";
+import { ModelTestType, ModelType } from "~/lib/types";
 
 export default function ModelPage() {
-  const model = useLoaderData<typeof loader>();
+  const model = useLoaderData<typeof loader>() as ModelType;
 
   if (!model) {
     return <div>Model not found</div>;
@@ -30,28 +31,32 @@ export default function ModelPage() {
           <p>User ID: {model.userId}</p>
           <h3 className="text-lg font-medium">Body Parts</h3>
           <ul>
-            {JSON.parse(model.bodyParts).map((part, index) => (
+            {JSON.parse(model.bodyParts).map((part: string, index: number) => (
               <li key={index}>{part}</li>
             ))}
           </ul>
           <h3 className="text-lg font-medium">Disease Categories</h3>
           <ul>
-            {JSON.parse(model.diseaseCategory).map((category, index) => (
-              <li key={index}>{category}</li>
-            ))}
+            {JSON.parse(model.diseaseCategory).map(
+              (category: string, index: number) => (
+                <li key={index}>{category}</li>
+              )
+            )}
           </ul>
           <h3 className="text-lg font-medium">Dataset IDs</h3>
           <ul>
-            {JSON.parse(model.datasetIds).map((id, index) => (
-              <li key={index}>{id}</li>
-            ))}
+            {JSON.parse(model.datasetIds || "[]").map(
+              (id: string, index: number) => (
+                <li key={index}>{id}</li>
+              )
+            )}
           </ul>
           <h3 className="text-lg font-medium">Disease IDs</h3>
           <ul>
             {model.diseaseIds.length > 0 ? (
-              JSON.parse(model.diseaseIds).map((id: string, index: number) => (
-                <li key={index}>{id}</li>
-              ))
+              JSON.parse(model.diseaseIds || "[]").map(
+                (id: string, index: number) => <li key={index}>{id}</li>
+              )
             ) : (
               <li>No disease IDs</li>
             )}
@@ -60,26 +65,26 @@ export default function ModelPage() {
             <>
               <h3 className="text-lg font-medium">Training Details</h3>
               <p>Date: {model.training.date}</p>
-              <p>DataSet ID: {model.training.dataSetId}</p>
-              <p>DataSet Name: {model.training.dataSetName}</p>
-              <p>Training Error: {model.training.trainingError}</p>
-              <p>Training Accuracy: {model.training.trainingAccuracy}</p>
+              <p>DataSet ID: {model.training.datasetId}</p>
+              <p>DataSet Name: {model.training.datasetName}</p>
+              <p>Training Error: {model.training.score}</p>
+              <p>Training Accuracy: {model.training.score}</p>
             </>
           )}
-          {model.testing && (
+          {model.test && (
             <>
               <h3 className="text-lg font-medium">Testing Details</h3>
-              {model.testing.map((test, index) => (
+              {model.test?.tests.map((test: ModelTestType, index: number) => (
                 <div key={index}>
                   <p>Date: {test.date}</p>
-                  <p>DataSet ID: {test.dataSetId}</p>
-                  <p>DataSet Name: {test.dataSetName}</p>
-                  <p>Testing Error: {test.testingError}</p>
-                  <p>Testing Accuracy: {test.testingAccuracy}</p>
+                  <p>DataSet ID: {test.datasetId}</p>
+                  <p>DataSet Name: {test.datasetName}</p>
+                  <p>Testing Error: {test.score}</p>
+                  <p>Testing Accuracy: {test.score}</p>
                 </div>
               ))}
               <h3 className="text-lg font-medium">Overall Testing Score</h3>
-              <p>{model.testingScore}</p>
+              <p>{model.test?.generalScore}</p>
             </>
           )}
         </div>

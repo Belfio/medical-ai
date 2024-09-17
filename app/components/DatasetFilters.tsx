@@ -13,6 +13,9 @@ export function DatasetFilters({
   const [selectedDiseases, setSelectedDiseases] = useState<string[]>([]);
 
   useEffect(() => {
+    console.log("selectedDataTypes", selectedDataTypes);
+    console.log("selectedBodyParts", selectedBodyParts);
+    console.log("selectedDiseases", selectedDiseases);
     onFilterChange({
       dataTypes: selectedDataTypes,
       bodyParts: selectedBodyParts,

@@ -1,12 +1,12 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference path="./.sst/platform/config.d.ts" />
-
 export default $config({
   app(input) {
     return {
       name: "medical-ai",
       removal: input?.stage === "production" ? "retain" : "remove",
       home: "aws",
+      providers: { cloudflare: "5.38.0", aws: "6.52.0" },
     };
   },
   async run() {
@@ -43,7 +43,6 @@ export default $config({
         },
       },
     });
-
     const modelTable = new sst.aws.Dynamo("Models", {
       fields: {
         modelId: "string",
@@ -77,7 +76,6 @@ export default $config({
         },
       },
     });
-
     const userTable = new sst.aws.Dynamo("Users", {
       fields: {
         userId: "string",
@@ -96,8 +94,11 @@ export default $config({
     const modeBucket = new sst.aws.Bucket("ModelBucket");
     const site = new sst.aws.Remix("MedicalAI", {
       link: [datasetTable, modelTable, userTable, datasetBucket, modeBucket],
+      // domain: {
+      //   name: "biomeddb.com",
+      //   dns: sst.cloudflare.dns(),
+      // },
     });
-
     return {
       app: "medical-ai",
       siteUrl: site.url,

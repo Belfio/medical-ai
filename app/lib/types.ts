@@ -30,19 +30,26 @@ export interface ModelType {
   notebookFile: string;
   website: string;
   modelFile: string;
-  test?: ModelTestType;
+  test?: ModelTestingType;
+  training?: ModelTrainingType;
   datasetIds?: string;
   diseaseCategory: string;
 }
 
-export interface ModelTestType {
+export interface ModelTestingType {
   generalScore: number;
-  tests: {
-    datasetId: string;
-    datasetName: string;
-    score: number;
-  }[];
-  sizeMB: number;
+  tests: ModelTestType[];
+}
+
+export interface ModelTrainingType extends ModelTestType {
+  generalScore: number;
+}
+
+export interface ModelTestType {
+  datasetId: string;
+  datasetName: string;
+  score: number;
+  date: string;
 }
 
 export interface DatasetType {

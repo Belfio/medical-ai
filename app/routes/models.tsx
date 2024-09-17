@@ -6,11 +6,14 @@ import { useFilters } from "~/hooks/useFilters";
 
 import db from "~/lib/db";
 
-import { ModelType } from "~/lib/types";
+import { DatasetType, ModelType } from "~/lib/types";
 
 export default function Models() {
   const { modelId } = useParams();
-  const { models } = useLoaderData<typeof loader>() as { models: ModelType[] };
+  const { models, datasets } = useLoaderData<typeof loader>() as {
+    models: ModelType[];
+    datasets: DatasetType[];
+  };
   const { data, handleFilterChange } = useFilters({ data: models });
 
   return (
@@ -26,7 +29,10 @@ export default function Models() {
             </Link>
           </div>
 
-          <ModelsFilters onFilterChange={handleFilterChange} />
+          <ModelsFilters
+            onFilterChange={handleFilterChange}
+            datasets={datasets}
+          />
 
           <ModelsTable models={data} className="mt-4" />
         </>
@@ -39,8 +45,9 @@ export default function Models() {
 export const loader = async () => {
   try {
     const models: ModelType[] = await db.model.getByRanking();
+    const datasets: DatasetType[] = await db.dataset.getByRanking();
     console.log("models", models);
-    return json({ models });
+    return json({ models, datasets });
   } catch (error) {
     console.error(error);
     return json({ error: "Failed to fetch datasets" }, { status: 500 });

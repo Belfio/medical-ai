@@ -2,14 +2,7 @@ import { LoaderFunctionArgs } from "@remix-run/node";
 import { json, useLoaderData } from "@remix-run/react";
 import db from "~/lib/db";
 import { DatasetType } from "~/lib/types";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from "~/components/ui/card";
-import { Badge } from "~/components/ui/badge";
+import { Card, CardHeader, CardTitle, CardContent } from "~/components/ui/card";
 
 export default function DatasetPage() {
   const dataset = useLoaderData<typeof loader>() as DatasetType;

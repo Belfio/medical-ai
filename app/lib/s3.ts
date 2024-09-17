@@ -30,7 +30,7 @@ const uploadStreamToS3 = async (
 
   await s3Client.send(new PutObjectCommand(params));
 
-  let url = await getSignedUrl(
+  const url = await getSignedUrl(
     s3Client,
     new GetObjectCommand({
       Bucket: BUCKET_NAME,

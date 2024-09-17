@@ -8,7 +8,7 @@ export const meta: MetaFunction = () => {
     {
       name: "description",
       content:
-        "A place to discover and share AI models and datasets for medical use",
+        "A place to discover and share datasets and models for biomedical use",
     },
   ];
 };
@@ -16,8 +16,8 @@ export const meta: MetaFunction = () => {
 export default function Index() {
   return (
     <>
-      <h1>The Bio-Medical Data and Models Hub</h1>
-      <p>We independently evaluate the best models and the best datasets</p>
+      <h1>BioMedical Database</h1>
+      <p>Find datasets and the best models.</p>
       <h2 className="mt-8 mb-2">Contribute</h2>
       <div className="flex  gap-2 border-dark  max-w-sm justify-between">
         <Link to="/datasets-add">
