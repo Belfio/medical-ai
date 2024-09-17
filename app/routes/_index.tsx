@@ -18,6 +18,22 @@ export default function Index() {
     <>
       <h1>BioMedical Database</h1>
       <p>Find datasets and the best models.</p>
+      <h2 className="mt-8 mb-2">Why</h2>
+      Our goal is to advance science by providing the best platform for
+      biomedical data and models.
+      <h2 className="mt-8 mb-2">What is it.</h2>
+      <p>
+        We take insipration from Kaggle, where people can submit their models
+        and datasets and compete to find the best solution to a problem.
+      </p>
+      <p>
+        biomeddb.com is specifically created to focus on biomedil challanges.
+      </p>
+      <p>
+        In this platform we promote the constant creation of new algorithms and
+        models to recognise biological markers. Quality data and algorithms are
+        key to progress.
+      </p>
       <h2 className="mt-8 mb-2">Contribute</h2>
       <div className="flex  gap-2 border-dark  max-w-sm justify-between">
         <Link to="/datasets-add">

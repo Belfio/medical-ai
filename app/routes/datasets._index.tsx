@@ -11,23 +11,17 @@ import { useFilters } from "~/hooks/useFilters";
 export default function Datasets() {
   const { datasets } = useLoaderData<{ datasets: DatasetType[] }>();
   const { data, handleFilterChange } = useFilters({ data: datasets });
-  const { datasetId } = useParams();
+
   return (
     <>
-      {datasetId ? (
-        <Outlet />
-      ) : (
-        <>
-          <div className="mt-2 flex gap-4">
-            <h2 className="text-2xl font-semibold mb-4">Datasets</h2>
-            <Link to="/datasets-add">
-              <Button>Add your dataset</Button>
-            </Link>
-          </div>
-          <DatasetFilters onFilterChange={handleFilterChange} />
-          {datasets && <DatasetsTable datasets={data} className="mt-4" />}
-        </>
-      )}
+      <div className="mt-2 flex gap-4">
+        <h2 className="text-2xl font-semibold mb-4">Datasets</h2>
+        <Link to="/datasets-add">
+          <Button>Add your dataset</Button>
+        </Link>
+      </div>
+      <DatasetFilters onFilterChange={handleFilterChange} />
+      {datasets && <DatasetsTable datasets={data} className="mt-4" />}
     </>
   );
 }

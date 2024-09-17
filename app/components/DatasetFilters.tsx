@@ -25,7 +25,7 @@ export function DatasetFilters({
 
   return (
     <div className="flex flex-col gap-0 max-w-2xl">
-      <h2 className="text-lg font-medium">Filter</h2>
+      {/* <h2 className="text-lg font-medium">Filter</h2> */}
       <div className="flex gap-1 items-center">
         <h3 className="text-sm font-medium w-1/6">Data type</h3>
         <MultiSelectorComplete

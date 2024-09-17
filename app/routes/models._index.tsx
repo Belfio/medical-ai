@@ -9,7 +9,6 @@ import db from "~/lib/db";
 import { DatasetType, ModelType } from "~/lib/types";
 
 export default function Models() {
-  const { modelId } = useParams();
   const { models, datasets } = useLoaderData<typeof loader>() as {
     models: ModelType[];
     datasets: DatasetType[];
@@ -18,25 +17,16 @@ export default function Models() {
 
   return (
     <>
-      {modelId ? (
-        <Outlet />
-      ) : (
-        <>
-          <div className="mt-2 flex gap-4">
-            <h2 className="text-2xl font-semibold mb-4">Models</h2>
-            <Link to="/model-add">
-              <Button>Submit your model</Button>
-            </Link>
-          </div>
+      <div className="mt-2 flex gap-4">
+        <h2 className="text-2xl font-semibold mb-4">Models</h2>
+        <Link to="/model-add">
+          <Button>Submit your model</Button>
+        </Link>
+      </div>
 
-          <ModelsFilters
-            onFilterChange={handleFilterChange}
-            datasets={datasets}
-          />
+      <ModelsFilters onFilterChange={handleFilterChange} datasets={datasets} />
 
-          <ModelsTable models={data} className="mt-4" />
-        </>
-      )}
+      <ModelsTable models={data} className="mt-4" />
     </>
   );
 }

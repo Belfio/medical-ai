@@ -79,3 +79,10 @@ export interface FiltersType {
   diseases: string[];
   datasets?: string[];
 }
+
+export interface DiseaseType {
+  name: string;
+  category: string;
+  description: string;
+  diseaseId: string;
+}

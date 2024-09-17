@@ -94,10 +94,10 @@ export default $config({
     const modeBucket = new sst.aws.Bucket("ModelBucket");
     const site = new sst.aws.Remix("MedicalAI", {
       link: [datasetTable, modelTable, userTable, datasetBucket, modeBucket],
-      // domain: {
-      //   name: "biomeddb.com",
-      //   dns: sst.cloudflare.dns(),
-      // },
+      domain: {
+        name: "biomeddb.com",
+        dns: sst.cloudflare.dns(),
+      },
     });
     return {
       app: "medical-ai",
