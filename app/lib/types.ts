@@ -77,4 +77,5 @@ export interface FiltersType {
   dataTypes: string[];
   bodyParts: string[];
   diseases: string[];
+  datasets?: string[];
 }

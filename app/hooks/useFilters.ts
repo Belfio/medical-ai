@@ -9,13 +9,12 @@ export function useFilters<T extends ModelType | DatasetType>({
   const [dataHook, setData] = useState(data);
 
   const handleFilterChange = (filters: FiltersType) => {
-    console.log("filters", filters);
     setData(
-      data.filter((dataset) => {
+      data.filter((element) => {
         const filterKeys = Object.keys(filters);
         if (
           filterKeys.every(
-            (key) => filters[key as keyof FiltersType].length === 0
+            (key) => filters[key as keyof FiltersType]?.length === 0
           )
         ) {
           return true;
@@ -26,20 +25,22 @@ export function useFilters<T extends ModelType | DatasetType>({
             return true;
 
           case filters.dataTypes.some((dT) =>
-            JSON.parse(dataset.dataType).includes(dT)
+            JSON.parse(element.dataType).includes(dT)
           ):
             return true;
 
-          case JSON.parse(dataset.bodyParts).some((part: string) =>
+          case JSON.parse(element.bodyParts).some((part: string) =>
             filters.bodyParts.includes(part)
           ):
             return true;
 
-          case JSON.parse(dataset.diseaseIds).some((disease: string) =>
+          case JSON.parse(element.diseaseIds).some((disease: string) =>
             filters.diseases.includes(disease)
           ):
             return true;
-
+          case filters?.datasets &&
+            filters.datasets.some((id: string) => id === element.datasetId):
+            return true;
           default:
             return false;
         }
