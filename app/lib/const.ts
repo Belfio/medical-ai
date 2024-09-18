@@ -807,184 +807,183 @@ const diseases = [
     categoryId: 4,
   },
 ];
-
 const categories = [
   {
-    categoryId: 0,
+    categoryId: "0",
     categoryName: "Other",
     ICDCode: "000-000",
     description: "Not in the list",
   },
   {
-    categoryId: 1,
+    categoryId: "1",
     categoryName: "Neurological Disorders",
     ICDCode: "G00-G99",
     description:
       "Neurological disorders include diseases of the brain, spinal cord, and nerves, such as Alzheimer's disease, Parkinson's disease, epilepsy, and multiple sclerosis.",
   },
   {
-    categoryId: 2,
+    categoryId: "2",
     categoryName: "Autoimmune Diseases",
     ICDCode: "M00-M99",
     description:
       "Autoimmune diseases occur when the immune system mistakenly attacks the body, causing conditions such as rheumatoid arthritis, lupus, and multiple sclerosis.",
   },
   {
-    categoryId: 3,
+    categoryId: "3",
     categoryName: "Infectious Diseases",
     ICDCode: "A00-B99",
     description:
       "Infectious diseases are caused by pathogens such as bacteria, viruses, fungi, and parasites. Examples include tuberculosis, HIV/AIDS, and influenza.",
   },
   {
-    categoryId: 4,
+    categoryId: "4",
     categoryName: "Genetic Disorders",
     ICDCode: "Q00-Q99",
     description:
       "Genetic disorders result from changes in an individual's DNA and include conditions such as Down syndrome, cystic fibrosis, and sickle cell anemia.",
   },
   {
-    categoryId: 5,
+    categoryId: "5",
     categoryName: "Lifestyle-Related Diseases",
     ICDCode: "E66",
     description:
       "Lifestyle-related diseases are often linked to habits such as poor diet, lack of exercise, and smoking, leading to conditions like obesity, type 2 diabetes, and heart disease.",
   },
   {
-    categoryId: 6,
+    categoryId: "6",
     categoryName: "Cardiovascular Diseases",
     ICDCode: "I00-I99",
     description:
       "Cardiovascular diseases affect the heart and blood vessels and include hypertension, coronary artery disease, and stroke.",
   },
   {
-    categoryId: 7,
+    categoryId: "7",
     categoryName: "Cancers",
     ICDCode: "C00-D49",
     description:
       "Cancers are characterized by the uncontrolled growth of abnormal cells and include various forms of malignancies such as lung cancer, breast cancer, and leukemia.",
   },
   {
-    categoryId: 8,
+    categoryId: "8",
     categoryName: "Digestive Disorders",
     ICDCode: "K00-K95",
     description:
       "Digestive disorders affect the gastrointestinal tract, liver, pancreas, and gallbladder. Examples include Crohn's disease, irritable bowel syndrome, and liver cirrhosis.",
   },
   {
-    categoryId: 9,
+    categoryId: "9",
     categoryName: "Respiratory Diseases",
     ICDCode: "J00-J99",
     description:
       "Respiratory diseases affect the lungs and airways, causing conditions like asthma, chronic obstructive pulmonary disease (COPD), and pneumonia.",
   },
   {
-    categoryId: 10,
+    categoryId: "10",
     categoryName: "Endocrine Disorders",
     ICDCode: "E00-E89",
     description:
       "Endocrine disorders involve imbalances or dysfunctions in hormone production, leading to conditions such as diabetes, hyperthyroidism, and Addison's disease.",
   },
   {
-    categoryId: 11,
+    categoryId: "11",
     categoryName: "Musculoskeletal Disorders",
     ICDCode: "M00-M99",
     description:
       "Musculoskeletal disorders affect the muscles, bones, joints, and connective tissue, and include conditions such as osteoporosis, arthritis, and muscular dystrophy.",
   },
   {
-    categoryId: 12,
+    categoryId: "12",
     categoryName: "Mental Health Disorders",
     ICDCode: "F00-F99",
     description:
       "Mental health disorders affect mood, thinking, and behavior, with examples including depression, schizophrenia, anxiety disorders, and bipolar disorder.",
   },
   {
-    categoryId: 13,
+    categoryId: "13",
     categoryName: "Blood Disorders",
     ICDCode: "D50-D89",
     description:
       "Blood disorders affect the components of blood, such as red blood cells, white blood cells, platelets, and plasma. Examples include anemia, hemophilia, and leukemia.",
   },
   {
-    categoryId: 14,
+    categoryId: "14",
     categoryName: "Dermatological Disorders",
     ICDCode: "L00-L99",
     description:
       "Dermatological disorders involve the skin, hair, and nails. Common conditions include eczema, psoriasis, acne, and skin infections.",
   },
   {
-    categoryId: 15,
+    categoryId: "15",
     categoryName: "Sexually Transmitted Infections",
     ICDCode: "A50-A64",
     description:
       "Sexually transmitted infections (STIs) are spread primarily through sexual contact and include HIV, syphilis, gonorrhea, and chlamydia.",
   },
   {
-    categoryId: 16,
+    categoryId: "16",
     categoryName: "Developmental Disorders",
     ICDCode: "F80-F89",
     description:
       "Developmental disorders affect physical, learning, language, or behavioral development. Examples include autism spectrum disorder, intellectual disabilities, and ADHD.",
   },
   {
-    categoryId: 17,
+    categoryId: "17",
     categoryName: "Eye and Vision Disorders",
     ICDCode: "H00-H59",
     description:
       "Eye and vision disorders affect the eyes and can impair vision. Conditions include glaucoma, cataracts, macular degeneration, and conjunctivitis.",
   },
   {
-    categoryId: 18,
+    categoryId: "18",
     categoryName: "Ear, Nose, and Throat Disorders",
     ICDCode: "H60-H95",
     description:
       "Ear, nose, and throat disorders affect sensory and functional organs in the head and neck, including conditions like sinusitis, hearing loss, and tonsillitis.",
   },
   {
-    categoryId: 19,
+    categoryId: "19",
     categoryName: "Kidney and Urinary Tract Diseases",
     ICDCode: "N00-N99",
     description:
       "Kidney and urinary tract diseases include conditions that affect the kidneys, bladder, and urinary system, such as chronic kidney disease, nephritis, and urinary tract infections.",
   },
   {
-    categoryId: 20,
+    categoryId: "20",
     categoryName: "Liver and Biliary Disorders",
     ICDCode: "K70-K77",
     description:
       "Liver and biliary disorders affect the liver, gallbladder, and bile ducts. Conditions include hepatitis, cirrhosis, and gallstones.",
   },
   {
-    categoryId: 21,
+    categoryId: "21",
     categoryName: "Reproductive Health Disorders",
     ICDCode: "N00-N99",
     description:
       "Reproductive health disorders affect the reproductive organs and fertility, including conditions such as polycystic ovary syndrome (PCOS), endometriosis, and infertility.",
   },
   {
-    categoryId: 22,
+    categoryId: "22",
     categoryName: "Metabolic Disorders",
     ICDCode: "E70-E88",
     description:
       "Metabolic disorders involve the body's processing of nutrients and energy. Examples include diabetes, metabolic syndrome, and hyperlipidemia.",
   },
   {
-    categoryId: 23,
+    categoryId: "23",
     categoryName: "Allergic Diseases",
     ICDCode: "J30-J39",
     description:
       "Allergic diseases occur when the immune system reacts to harmless substances as though they are dangerous. Common conditions include allergic rhinitis, asthma, and food allergies.",
   },
   {
-    categoryId: 24,
+    categoryId: "24",
     categoryName: "Congenital Disorders",
     ICDCode: "Q00-Q99",
     description:
       "Congenital disorders are present at birth and can affect various body systems. Examples include spina bifida, congenital heart defects, and cleft lip.",
   },
   {
-    categoryId: 25,
+    categoryId: "25",
     categoryName: "Poisoning and Toxic Effects",
     ICDCode: "T36-T50",
     description:

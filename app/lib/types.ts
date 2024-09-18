@@ -85,7 +85,14 @@ export interface DiseaseType {
   category: string;
   description: string;
   diseaseId: string;
-  approved: boolean;
+  approved: "true" | "false";
   createdAt: string;
   tConst: "metadata";
+}
+
+export interface CategoryType {
+  categoryId: string;
+  categoryName: string;
+  ICDCode: string;
+  description: string;
 }

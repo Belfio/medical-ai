@@ -115,14 +115,17 @@ export default $config({
         modeBucket,
         diseaseTable,
       ],
-      // domain: {
-      //   name: "biomeddb.com",
-      //   dns: sst.cloudflare.dns(),
-      // },
+      domain:
+        $app.stage === "prod"
+          ? {
+              name: "biomeddb.com",
+              dns: sst.cloudflare.dns(),
+            }
+          : undefined,
     });
 
     return {
-      app: "medical-ai",
+      app: "biomeddb",
       siteUrl: site.url,
     };
   },

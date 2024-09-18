@@ -15,6 +15,8 @@ interface DatasetsTableProps {
   models: ModelType[] | [];
   datasets: DatasetType[] | [];
   className?: string;
+  nameSearch?: React.ReactNode;
+  categorySearch?: React.ReactNode;
 }
 
 const DiseasesTable: React.FC<DatasetsTableProps> = ({
@@ -22,14 +24,20 @@ const DiseasesTable: React.FC<DatasetsTableProps> = ({
   diseases,
   models,
   className,
+  nameSearch,
+  categorySearch,
 }) => {
   return (
     <Table className={`min-w-[1024px] w-full pr-8 ${className}`}>
       <TableHeader>
         <TableRow>
-          <TableHead>Name</TableHead>
+          <TableHead className="flex-row gap-2 justify-between">
+            <span>Name</span> {nameSearch}
+          </TableHead>
           <TableHead>Description</TableHead>
-          <TableHead>Category</TableHead>
+          <TableHead className="flex-row gap-2">
+            Category {categorySearch}
+          </TableHead>
           <TableHead>Datasets</TableHead>
           <TableHead>Models</TableHead>
         </TableRow>

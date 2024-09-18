@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, ChevronsUpDown } from "lucide-react";
+import { Check, Search } from "lucide-react";
 
 import { cn } from "~/lib/utils";
 import { Button } from "~/components/ui/button";
@@ -19,7 +19,7 @@ import {
 } from "~/components/ui/popover";
 import { useState } from "react";
 
-export function Combobox({
+export function ComboboxIcon({
   options,
   value,
   setValue,
@@ -39,15 +39,12 @@ export function Combobox({
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
-          variant="outline"
+          variant="ghost"
           role="combobox"
           aria-expanded={open}
-          className={cn("w-[200px] justify-between", className)}
+          className="w-[fit]"
         >
-          {value
-            ? options.find((option) => option.label === value)?.label
-            : placeholder ?? "Search..."}
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          <Search className="h-4 w-4" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className={cn("w-[200px] justify-between", className)}>

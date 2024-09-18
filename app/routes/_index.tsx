@@ -4,7 +4,7 @@ import { Button } from "~/components/ui/button";
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "Medical AI" },
+    { title: "Biomed DB" },
     {
       name: "description",
       content:
