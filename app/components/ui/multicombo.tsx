@@ -21,8 +21,8 @@ import React, {
 
 interface MultiSelectorProps
   extends React.ComponentPropsWithoutRef<typeof CommandPrimitive> {
-  values: string[];
-  onValuesChange: (value: string[]) => void;
+  values: (undefined | string)[];
+  onValuesChange: (value: (undefined | string)[]) => void;
   loop?: boolean;
 }
 
@@ -156,12 +156,13 @@ const MultiSelector = ({
         case "Delete":
           if (value.length > 0) {
             if (activeIndex !== -1 && activeIndex < value.length) {
-              onValueChangeHandler(value[activeIndex]);
+              value[activeIndex] && onValueChangeHandler(value[activeIndex]);
               moveCurrent();
             } else {
               if (target.selectionStart === 0) {
                 if (selectedValue === inputValue || isValueSelected) {
-                  onValueChangeHandler(value[value.length - 1]);
+                  value[value.length - 1] &&
+                    onValueChangeHandler(value[value.length - 1]);
                 }
               }
             }
@@ -242,7 +243,7 @@ const MultiSelectorTrigger = forwardRef<
         <Badge
           key={item}
           className={cn(
-            "px-1 rounded-xl flex items-center gap-1",
+            "pl-2 pr-1 rounded-xl flex items-center gap-1",
             activeIndex === index && "ring-2 ring-muted-foreground "
           )}
           variant={"secondary"}
@@ -383,9 +384,9 @@ const MultiSelectorComplete = ({
   placeholder,
   options,
 }: {
-  values: string[];
+  values: (string | undefined)[];
   placeholder: string;
-  onValuesChange: (value: string[]) => void;
+  onValuesChange: (value: (undefined | string)[]) => void;
   options: { label: string; value: string }[];
 }) => {
   return (

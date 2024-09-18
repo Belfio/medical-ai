@@ -39,7 +39,7 @@ export default function Diseases() {
           placeholder="Description"
           className="h-auto resize-none"
         />
-        <input type="hidden" name="category" value={category?.categoryId} />
+        <input type="hidden" name="categoryId" value={category?.categoryId} />
         <div className="flex gap-4">
           <Button variant="outline">Cancel</Button>
           <Button>Save</Button>
@@ -52,11 +52,11 @@ export default function Diseases() {
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
   const name = String(formData.get("name"));
-  const category = String(formData.get("category"));
+  const categoryId = String(formData.get("categoryId"));
   const description = String(formData.get("description"));
   const disease: DiseaseType = {
     name,
-    category,
+    categoryId,
     description,
     diseaseId: uuidv4(),
     approved: "true",

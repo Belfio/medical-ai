@@ -1,16 +1,24 @@
-import { bodyParts, dataTypes, diseases } from "~/lib/const";
+import { bodyParts, dataTypes } from "~/lib/const";
 import { MultiSelectorComplete } from "./ui/multicombo";
 import { useEffect, useState } from "react";
-import { FiltersType } from "~/lib/types";
+import { DiseaseType, FiltersType } from "~/lib/types";
 
 export function DatasetFilters({
+  diseases,
   onFilterChange,
 }: {
   onFilterChange: (filters: FiltersType) => void;
+  diseases: DiseaseType[];
 }) {
-  const [selectedDataTypes, setSelectedDataTypes] = useState<string[]>([]);
-  const [selectedBodyParts, setSelectedBodyParts] = useState<string[]>([]);
-  const [selectedDiseases, setSelectedDiseases] = useState<string[]>([]);
+  const [selectedDataTypes, setSelectedDataTypes] = useState<
+    (string | undefined)[]
+  >([]);
+  const [selectedBodyParts, setSelectedBodyParts] = useState<
+    (string | undefined)[]
+  >([]);
+  const [selectedDiseases, setSelectedDiseases] = useState<
+    (string | undefined)[]
+  >([]);
 
   useEffect(() => {
     console.log("selectedDataTypes", selectedDataTypes);
@@ -60,9 +68,11 @@ export function DatasetFilters({
         <MultiSelectorComplete
           options={diseases.map((disease) => ({
             label: disease.name,
-            value: String(disease.id),
+            value: String(disease.diseaseId),
           }))}
-          values={selectedDiseases}
+          values={selectedDiseases.map(
+            (disease) => diseases.find((d) => d.diseaseId === disease)?.name
+          )}
           onValuesChange={(selected) => {
             setSelectedDiseases(selected);
           }}

@@ -71,6 +71,8 @@ export interface DatasetType {
   bodyFocus: (typeof bodyFocus)[number];
   name: string;
   instructions: string;
+  externalUrl?: string;
+  internalUrl?: string;
 }
 
 export interface FiltersType {
@@ -82,7 +84,7 @@ export interface FiltersType {
 
 export interface DiseaseType {
   name: string;
-  category: string;
+  categoryId: string;
   description: string;
   diseaseId: string;
   approved: "true" | "false";

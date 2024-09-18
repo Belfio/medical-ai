@@ -1,6 +1,6 @@
 import DatasetsTable from "~/components/DatasetsTable";
 import { json } from "@remix-run/node";
-import { DatasetType } from "~/lib/types";
+import { DatasetType, DiseaseType } from "~/lib/types";
 import { Link, useLoaderData } from "@remix-run/react";
 import db from "~/lib/db";
 import { Button } from "~/components/ui/button";
@@ -9,7 +9,10 @@ import { DatasetFilters } from "~/components/DatasetFilters";
 import { useFilters } from "~/hooks/useFilters";
 
 export default function Datasets() {
-  const { datasets } = useLoaderData<{ datasets: DatasetType[] }>();
+  const { datasets, diseases } = useLoaderData<{
+    datasets: DatasetType[];
+    diseases: DiseaseType[];
+  }>();
   const { data, handleFilterChange } = useFilters({ data: datasets });
 
   return (
@@ -20,8 +23,9 @@ export default function Datasets() {
           <Button>Add your dataset</Button>
         </Link>
       </div>
-      <DatasetFilters onFilterChange={handleFilterChange} />
-      {datasets && <DatasetsTable datasets={data} className="mt-4" />}
+      <DatasetFilters onFilterChange={handleFilterChange} diseases={diseases} />
+
+      <DatasetsTable diseases={diseases} datasets={data} className="mt-4" />
     </>
   );
 }
@@ -29,7 +33,8 @@ export default function Datasets() {
 export const loader = async () => {
   try {
     const datasets: DatasetType[] = await db.dataset.getByRanking();
-    return json({ datasets });
+    const diseases: DiseaseType[] = await db.disease.getNItems(100);
+    return json({ datasets, diseases });
   } catch (error) {
     console.error(error);
     return json({ error: "Failed to fetch datasets" }, { status: 500 });

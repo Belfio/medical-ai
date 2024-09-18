@@ -8,15 +8,17 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
-import { DatasetType } from "~/lib/types";
+import { DatasetType, DiseaseType } from "~/lib/types";
 
 interface DatasetsTableProps {
   datasets: DatasetType[] | [];
+  diseases: DiseaseType[];
   className?: string;
 }
 
 const DatasetsTable: React.FC<DatasetsTableProps> = ({
   datasets,
+  diseases,
   className,
 }) => {
   return (
@@ -40,9 +42,16 @@ const DatasetsTable: React.FC<DatasetsTableProps> = ({
                 {dataset.name}
               </Link>
             </TableCell>
-            <TableCell>{dataset.dataType}</TableCell>
-            <TableCell>{dataset.diseaseIds}</TableCell>
-            <TableCell>{dataset.bodyParts}</TableCell>
+            <TableCell>{JSON.parse(dataset.dataType).join(", ")}</TableCell>
+            <TableCell>
+              {JSON.parse(dataset.diseaseIds)
+                .map(
+                  (d: string) =>
+                    diseases.find((disease) => disease.diseaseId === d)?.name
+                )
+                .join(", ")}
+            </TableCell>
+            <TableCell>{JSON.parse(dataset.bodyParts).join(", ")}</TableCell>
             <TableCell>{dataset.size}</TableCell>
             <TableCell>{dataset.author}</TableCell>
             <TableCell>

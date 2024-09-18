@@ -28,7 +28,7 @@ export default function Diseases() {
   };
   useEffect(() => {
     const filteredDiseases = diseases.filter((disease) => {
-      return selectedCategory ? disease.category === selectedCategory : true;
+      return selectedCategory ? disease.categoryId === selectedCategory : true;
     });
     setDiseasesList(filteredDiseases);
   }, [selectedCategory, diseases]);

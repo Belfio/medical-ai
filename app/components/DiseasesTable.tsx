@@ -8,6 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
+import { categories } from "~/lib/const";
 import { DatasetType, DiseaseType, ModelType } from "~/lib/types";
 
 interface DatasetsTableProps {
@@ -50,8 +51,14 @@ const DiseasesTable: React.FC<DatasetsTableProps> = ({
                 {disease.name}
               </Link>
             </TableCell>
-            <TableCell>{disease.description}</TableCell>
-            <TableCell>{disease.category}</TableCell>
+            <TableCell>{disease.description.substring(0, 100)}...</TableCell>
+            <TableCell>
+              {
+                categories.find(
+                  (c) => String(disease.categoryId) === String(c.categoryId)
+                )?.categoryName
+              }
+            </TableCell>
             <TableCell>
               {
                 datasets.filter((dataset) =>

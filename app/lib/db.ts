@@ -262,6 +262,14 @@ const db = {
       )) as { items: DiseaseType[] | null; lastEvaluatedKey?: any };
       return diseases.items || [];
     },
+    getByLatest: async (n = 50): Promise<DiseaseType[]> => {
+      const datasets = (await getNItems(
+        Resource.Diseases.name,
+        "CreationIndex",
+        n
+      )) as { items: DiseaseType[] | null; lastEvaluatedKey?: any };
+      return datasets.items || [];
+    },
     create: async (disease: DiseaseType) => {
       try {
         const response = await createItem(Resource.Diseases.name, disease);

@@ -4,28 +4,36 @@ import {
   LoaderFunctionArgs,
   redirect,
 } from "@remix-run/node";
-import { Form, useLoaderData } from "@remix-run/react";
+import { Form, Link, Outlet, useLoaderData } from "@remix-run/react";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import db from "~/lib/db";
 import { DiseaseType } from "~/lib/types";
+import { getCategoryName } from "~/lib/utils";
 
 export default function Diseases() {
   const disease = useLoaderData<DiseaseType>();
   return (
     <>
-      <div className="flex items-center gap-2">
-        <h1>{disease.name}</h1>
-        <Badge>{disease.category}</Badge>
+      <div className="flex flex-row gap-2">
+        <div className="w-1/2 p-4 flex-col space-y-8">
+          <div className="flex items-center gap-2">
+            <h1>{disease.name}</h1>
+            <Badge>{getCategoryName(disease.categoryId)}</Badge>
+          </div>
+          <p>{disease.description}</p>
+          <Form method="POST" className="flex gap-2">
+            <Link to={`/diseases/${disease.diseaseId}/edit`}>
+              <Button variant="outline">Edit</Button>
+            </Link>
+            <Button type="submit" name="remove" value={disease.diseaseId}>
+              Remove
+            </Button>
+            <input type="hidden" name="diseaseId" value={disease.diseaseId} />
+          </Form>
+        </div>
+        <Outlet />
       </div>
-      <p>{disease.description}</p>
-      <Form method="POST" className="flex gap-2">
-        <Button type="submit">Edit</Button>
-        <Button type="submit" name="remove" value={disease.diseaseId}>
-          Remove
-        </Button>
-        <input type="hidden" name="diseaseId" value={disease.diseaseId} />
-      </Form>
     </>
   );
 }

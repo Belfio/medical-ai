@@ -3,7 +3,7 @@ import s3 from "./lib/s3";
 
 export const s3UploaderHandler: <T extends UploadHandlerPart>(
   props: T,
-  modelId: string
+  valueId: string
 ) => Promise<string> = async (props, valueId) => {
   console.log("props", props);
   console.log("modelId", valueId);
@@ -43,4 +43,30 @@ export const s3UploaderHandler: <T extends UploadHandlerPart>(
       break;
   }
   return await s3.datasets.upload(data, s3FileName, contentType);
+};
+
+export const externalLinkUploader = async (
+  datasetUrl: string,
+  datasetId: string
+) => {
+  const url = new URL(datasetUrl as string);
+  const response = await fetch(url);
+  const blob = await response.blob();
+  const reader = blob.stream().getReader();
+  const asyncIterable = {
+    async *[Symbol.asyncIterator]() {
+      let result;
+      while (!(result = await reader.read()).done) {
+        yield result.value;
+      }
+    },
+  };
+  const s3FileName = `datasetFile-${datasetId}.zip`;
+  const s3Url = await s3.datasets.upload(
+    asyncIterable,
+    s3FileName,
+    "application/zip"
+  );
+
+  return s3Url;
 };

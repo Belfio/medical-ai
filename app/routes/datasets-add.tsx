@@ -4,12 +4,13 @@ import {
   UploadHandler,
   UploadHandlerPart,
 } from "@remix-run/node";
-import { DatasetType } from "~/lib/types";
+import { DatasetType, DiseaseType } from "~/lib/types";
 import {
   Form,
   json,
   redirect,
   useActionData,
+  useLoaderData,
   useNavigation,
 } from "@remix-run/react";
 import db from "~/lib/db";
@@ -19,25 +20,24 @@ import { MultiSelectorComplete } from "~/components/ui/multicombo";
 import { useState } from "react";
 import { Textarea } from "~/components/ui/textarea";
 import { s3UploaderHandler } from "~/upload.server";
-import {
-  bodyFocus,
-  bodyParts,
-  categories,
-  dataTypes,
-  diseases,
-} from "~/lib/const";
-import { randomId } from "~/lib/utils";
+import { bodyFocus, bodyParts, categories, dataTypes } from "~/lib/const";
+import { getCategoryName, randomId } from "~/lib/utils";
+import s3 from "~/lib/s3";
+import { Resource } from "sst";
 
 export default function Datasets() {
   const data = useActionData<typeof action>() as {
     error: string;
     missingFields: string[];
   };
-  const [selDiseases, setDiseases] = useState<string[]>([]);
-  const [selDisCategories, setCategories] = useState<string[]>([]);
-  const [selTypes, setTypes] = useState<string[]>([]);
-  const [selBodyParts, setBodyParts] = useState<string[]>([]);
-  const [selBodyFocus, setBodyFocus] = useState<string[]>([]);
+  const diseases = useLoaderData<DiseaseType[]>();
+  const [selDiseases, setDiseases] = useState<(undefined | string)[]>([]);
+  const [selDisCategories, setCategories] = useState<(undefined | string)[]>(
+    []
+  );
+  const [selTypes, setTypes] = useState<(undefined | string)[]>([]);
+  const [selBodyParts, setBodyParts] = useState<(undefined | string)[]>([]);
+  const [selBodyFocus, setBodyFocus] = useState<(undefined | string)[]>([]);
   const navigation = useNavigation();
 
   return (
@@ -70,7 +70,7 @@ export default function Datasets() {
         <h2 className="mt-8">Clinical target</h2>
         {/* CLINICAL TARGET - CATEGORY */}
         <MultiSelectorComplete
-          values={selDisCategories}
+          values={selDisCategories.map((id) => id && getCategoryName(id)) || []}
           placeholder="Select Disease Category"
           options={categories.map((category) => ({
             label: category.categoryName,
@@ -80,7 +80,9 @@ export default function Datasets() {
         />
         {/* CLINICAL TARGET - SPECIFIC DISEASES */}
         <MultiSelectorComplete
-          values={selDiseases}
+          values={selDiseases.map(
+            (id) => diseases.find((d) => d.diseaseId === id)?.name
+          )}
           placeholder="Select Specific Diseases (optional)"
           options={
             selDisCategories.length > 0
@@ -91,11 +93,11 @@ export default function Datasets() {
                   )
                   .map((disease) => ({
                     label: disease.name,
-                    value: String(disease.id),
+                    value: String(disease.diseaseId),
                   }))
               : diseases.map((disease) => ({
                   label: disease.name,
-                  value: String(disease.id),
+                  value: String(disease.diseaseId),
                 }))
           }
           onValuesChange={setDiseases}
@@ -136,7 +138,7 @@ export default function Datasets() {
           className=""
           type="text"
           name="size"
-          placeholder="Population size, how many humans"
+          placeholder="Population size, how many humans (optional)"
         />
         <Textarea
           name="instructions"
@@ -171,7 +173,14 @@ export default function Datasets() {
           type="file"
           name="datasetFile"
           accept=".zip"
-          className="mb-12 pt-3 h-12 items-center bg-green-200"
+          className="pt-3 h-12 items-center bg-green-200"
+        />
+        <p>Or</p>
+        <Input
+          type="text"
+          name="datasetUrl"
+          placeholder="Dataset URL"
+          className="mb-12 h-12 items-center bg-green-200"
         />
         <Button
           type="submit"
@@ -194,10 +203,9 @@ export default function Datasets() {
 export const action = async ({ request }: ActionFunctionArgs) => {
   const datasetId = randomId();
 
-  const datasetFileName = `dataset-${datasetId}.zip`;
-
   const s3uploaderWithId: UploadHandler = (props: UploadHandlerPart) =>
-    s3UploaderHandler(props, datasetFileName);
+    s3UploaderHandler(props, datasetId);
+
   const formData = await unstable_parseMultipartFormData(
     request,
     s3uploaderWithId
@@ -215,12 +223,12 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const diseaseCategory = formData.get("diseaseCategory");
   const bodyFocus = formData.get("bodyFocus");
   const instructions = formData.get("instructions");
+  const datasetUrl = formData.get("datasetUrl");
   if (
     !name ||
     !description ||
     !author ||
-    !size ||
-    !datasetFile ||
+    (!datasetFile && !datasetUrl) ||
     !diseaseId ||
     !bodyParts ||
     !types ||
@@ -232,8 +240,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     if (!name) missingFields.push("name");
     if (!description) missingFields.push("description");
     if (!author) missingFields.push("author");
-    if (!size) missingFields.push("size");
-    if (!datasetFile) missingFields.push("datasetFile");
+    if (!datasetFile && !datasetUrl) missingFields.push("datasetFile");
     if (!diseaseId) missingFields.push("diseaseId");
     if (!bodyParts) missingFields.push("bodyParts");
     if (!types) missingFields.push("types");
@@ -242,6 +249,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     if (!instructions) missingFields.push("instructions");
     return json({ error: "Some fields are required", missingFields });
   }
+
   const dataset: DatasetType = {
     createdAt: new Date().toISOString(),
     ranking: 0,
@@ -261,8 +269,15 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     diseaseCategory: diseaseCategory as string,
     bodyFocus: bodyFocus as string,
     instructions: instructions as string,
+    externalUrl: datasetUrl as string,
+    internalUrl: Resource.DatasetBucket.name,
   };
   await db.dataset.create(dataset);
 
   return redirect("/datasets");
+};
+
+export const loader = async () => {
+  const diseases = await db.disease.getByLatest(999);
+  return diseases;
 };
