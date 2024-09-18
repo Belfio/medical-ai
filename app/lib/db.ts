@@ -239,6 +239,12 @@ const db = {
     },
   },
   disease: {
+    get: async (diseaseId: string): Promise<DiseaseType> => {
+      const disease = (await getItem(Resource.Diseases.name, {
+        diseaseId,
+      })) as DiseaseType;
+      return disease;
+    },
     getByApproved: async (): Promise<DiseaseType[]> => {
       const diseases = (await queryItems(
         Resource.Diseases.name,
