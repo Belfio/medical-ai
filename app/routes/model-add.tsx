@@ -20,16 +20,16 @@ import { MultiSelectorComplete } from "~/components/ui/multicombo";
 import { useState } from "react";
 import { Textarea } from "~/components/ui/textarea";
 import { s3UploaderHandler } from "~/upload.server";
-import { bodyParts, categories, dataTypes, diseases } from "~/lib/const";
+import { bodyParts, categories, dataTypes } from "~/lib/const";
 import { CircleAlert } from "lucide-react";
-import { randomId } from "~/lib/utils";
+import { getCategoryName, randomId } from "~/lib/utils";
 
 export default function ModelAdd() {
   const data = useActionData<typeof action>() as {
     error: string;
     missingFields: string[];
   };
-  const { datasets } = useLoaderData<typeof loader>();
+  const { datasets, diseases } = useLoaderData<typeof loader>();
   const [diseasesSelected, setDiseases] = useState<string[]>([]);
   const [typesSelected, setTypes] = useState<string[]>([]);
   const [bodyPartsSelected, setBodyParts] = useState<string[]>([]);
@@ -48,7 +48,7 @@ export default function ModelAdd() {
           <CircleAlert className="text-yellow-600 w-12" />
           <p className="text-sm text-yellow-600">
             Please note that the model needs to work on at least one dataset to
-            be published. Use one of the existing datasets or add a new one{" "}
+            be published. Use one of the existing datasets or add a new one
             <Link to="/datasets-add" className="underline bold">
               here.
             </Link>
@@ -87,7 +87,7 @@ export default function ModelAdd() {
         <h2 className="mt-8">Clinical target</h2>
         {/* Disease Category */}
         <MultiSelectorComplete
-          values={selDisCategories}
+          values={selDisCategories.map((category) => getCategoryName(category))}
           placeholder="Select Disease Category"
           options={categories.map((category) => ({
             label: category.categoryName,
@@ -97,7 +97,10 @@ export default function ModelAdd() {
         />
         {/* Diseases */}
         <MultiSelectorComplete
-          values={diseasesSelected}
+          values={diseasesSelected.map(
+            (diseaseId) =>
+              diseases.find((disease) => disease.diseaseId === diseaseId)?.name
+          )}
           placeholder="Select Specific Diseases (optional)"
           options={
             selDisCategories.length > 0
@@ -108,11 +111,11 @@ export default function ModelAdd() {
                   )
                   .map((disease) => ({
                     label: disease.name,
-                    value: String(disease.id),
+                    value: String(disease.diseaseId),
                   }))
               : diseases.map((disease) => ({
                   label: disease.name,
-                  value: String(disease.id),
+                  value: String(disease.diseaseId),
                 }))
           }
           onValuesChange={setDiseases}
@@ -121,7 +124,10 @@ export default function ModelAdd() {
         <h2 className="mt-8">Data information</h2>
         {/* Datasets */}
         <MultiSelectorComplete
-          values={selectedDatasets}
+          values={selectedDatasets.map(
+            (datasetId) =>
+              datasets.find((dataset) => dataset.datasetId === datasetId)?.name
+          )}
           placeholder="Select the dataset to test this model"
           options={datasets.map((d: DatasetType) => ({
             label: d.name,
@@ -208,8 +214,9 @@ export default function ModelAdd() {
 }
 export const loader = async () => {
   const datasets = await db.dataset.getByLatest();
+  const diseases = await db.disease.getByLatest(100);
   console.log("datasets length", datasets.length);
-  return { datasets };
+  return { datasets, diseases };
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
