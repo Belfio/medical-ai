@@ -36,7 +36,7 @@ export default function ModelPage() {
             <input type="hidden" name="modelId" value={model.modelId} />
           </Form>
         </div>
-        <Outlet />
+        
       </div>
       <div className="font-sans p-4">
         <h1 className="text-3xl">Model: {model.modelId}</h1>

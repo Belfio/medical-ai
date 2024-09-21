@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  notebook-runner:
+    build: .
+    container_name: notebook-runner
+    environment:
+      - PYTHONUNBUFFERED=1
+      - AWS_DEFAULT_REGION=us-east-1
+      - NOTEBOOK_URL=${NOTEBOOK_URL}
+      - DATASET_URL=${DATASET_URL}
+    ports:
+      - "8888:8888"
+    volumes:
+      - .:/app
+    command: ["python", "/app/setup.py", "${DATASET_URL}", "${NOTEBOOK_URL}"]

@@ -123,6 +123,7 @@ export default $config({
             }
           : undefined,
     });
+    
 
     return {
       app: "biomeddb",
