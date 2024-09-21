@@ -43,7 +43,7 @@ export default function Index() {
             <Button className="mt-4">Add your dataset</Button>
           </div>
         </Link>
-        <Link to="/model-add">
+        <Link to="/models/add">
           <div className="border-2 rounded-sm p-4 text-center hover:bg-accent transition duration-300 ease-in-out">
             <h3>Submit your Model</h3>
 

@@ -19,7 +19,7 @@ export default function Models() {
     <>
       <div className="mt-2 flex gap-4">
         <h2 className="text-2xl font-semibold mb-4">Models</h2>
-        <Link to="/model-add">
+        <Link to="/models/add">
           <Button>Submit your model</Button>
         </Link>
       </div>

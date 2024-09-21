@@ -28,15 +28,17 @@ export const s3UploaderHandler: <T extends UploadHandlerPart>(
   let s3FileName = filename;
   switch (props.name) {
     case "modelFile":
-      s3FileName = `model-${valueId}.zip`;
+      s3FileName = `model-${valueId.slice(0, 5)}-${filename}`;
       return await s3.models.upload(data, s3FileName, contentType);
       break;
     case "notebookFile":
-      s3FileName = `notebook-${valueId}.ipynb`;
+      s3FileName = `notebook-${valueId.slice(0, 5)}-${filename}`;
       return await s3.models.upload(data, s3FileName, contentType);
       break;
     case "datasetFile":
-      s3FileName = `datasetFile-${valueId}.zip`;
+      s3FileName = `datasetFile-${valueId.slice(0, 5)}-${
+        filename.split(".")[0]
+      }.zip`;
       return await s3.datasets.upload(data, s3FileName, contentType);
       break;
     default:

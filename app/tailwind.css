@@ -66,7 +66,7 @@
 }
 
 h1 {
-  @apply text-2xl font-bold;
+  @apply text-3xl font-bold;
 }
 
 h2 {
@@ -74,4 +74,29 @@ h2 {
 }
 h3 {
   @apply text-lg font-bold;
+}
+
+.custom-file-input {
+  opacity: 0;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 100;
+}
+
+.custom-file-label {
+  display: inline-block;
+  padding: 6px 12px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: black;
+  border: 1px solid #007bff;
+  border-radius: 4px;
+}
+
+.custom-file-label:hover {
+  background-color: #0056b3;
+  border-color: #0056b3;
 }
