@@ -10,7 +10,9 @@ import {
   json,
   redirect,
   useActionData,
+  useFetcher,
   useLoaderData,
+  useSubmit,
 } from "@remix-run/react";
 import db from "~/lib/db";
 import { Button } from "~/components/ui/button";
@@ -26,6 +28,8 @@ import ModelQuestionnaire from "~/components/ModelQuestionnaire";
 import ModelUploadSmall from "~/components/UploadSmall";
 
 export default function ModelAdd() {
+  const submit = useSubmit();
+  const fetcher = useFetcher();
   const error = useActionData<typeof action>() as {
     error: string;
     missingFields: string[];
@@ -33,12 +37,47 @@ export default function ModelAdd() {
   const { datasets, diseases } = useLoaderData<typeof loader>();
 
   const [files, setFiles] = useState<FileList | null>(null);
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    console.log("pobaaaa");
+    e.preventDefault();
+    console.log("files", files?.length);
+    console.log("e.currentTarget", e.currentTarget.elements);
+    console.log(
+      "files",
+      Array.from(files).map((file) => file.name)
+    );
+    if (!files) return;
+    // can I merge the 2 files and send them in a single formdata?
+    const formData = new FormData();
+    formData.append("notebookFile", files[0]);
+    formData.append("modelFile", files[1]);
+    return await fetcher.submit(formData, {
+      method: "post",
+      encType: "multipart/form-data", // Change this line
+      action: "/models/add/file",
+    });
+    if (!files) return;
+    console.log("files", files.length);
+    // posso provare a fare un altro encoding dove creo un json con key il file name e value il file content e poi stringiy/blob e mando quello al submit?
+
+    Array.from(files).forEach(async (file) => {
+      console.log("file", file);
+      const formData = new FormData();
+      formData.append("notebookFile", file);
+      await submit(formData, {
+        encType: "multipart/form-data",
+        method: "post",
+        action: "/models/add/file",
+      });
+    });
+  };
   return (
     <>
-      <Form
+      <fetcher.Form
         method="post"
         className="flex flex-col gap-4 max-w-[540px]"
         encType="multipart/form-data"
+        onSubmit={handleSubmit}
       >
         <h1>Upload your model</h1>
         {files?.length && files?.length > 0 ? (
@@ -49,9 +88,6 @@ export default function ModelAdd() {
               setFiles={setFiles}
               className="mt-4 w-full"
             />
-            <Button type="submit" name="button">
-              Submit
-            </Button>
             {error && error.error && (
               <p className="text-red-500">{error.error}</p>
             )}
@@ -60,6 +96,9 @@ export default function ModelAdd() {
                 Missing fields: {error.missingFields.join(", ")}
               </p>
             )}{" "}
+            <Button type="submit" name="button">
+              Submit
+            </Button>
           </>
         ) : (
           <>
@@ -104,7 +143,7 @@ export default function ModelAdd() {
             </div>
           </>
         )}
-      </Form>
+      </fetcher.Form>
     </>
   );
 }
@@ -116,6 +155,7 @@ export const loader = async () => {
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
+  return json({ error: "test" }, { status: 400 });
   const modelId = randomId();
   console.log("model id", modelId);
   const s3uploaderWithId: UploadHandler = (props: UploadHandlerPart) =>
@@ -124,6 +164,12 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     request,
     s3uploaderWithId
   );
+  const notebookFile = formData.get("notebookFile");
+  const modelFile = formData.get("modelFile");
+  console.log("modelFile", modelFile);
+  console.log("formData", formData);
+  console.log("notebookFile", notebookFile);
+  return json({ error: "test" }, { status: 400 });
   const name = formData.get("name");
   const description = formData.get("description");
   const author = formData.get("author");
@@ -132,8 +178,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const diseaseIds = formData.get("diseaseId");
   const diseaseCategories = formData.get("diseaseCategories");
   const bodyParts = formData.get("bodyParts");
-  const notebookFile = formData.get("notebookFile");
-  const modelFile = formData.get("modelFile");
+  // const modelFile = formData.get("modelFile");
   const dataType = formData.get("dataType");
   const datasetIds = formData.get("datasetIds");
   if (

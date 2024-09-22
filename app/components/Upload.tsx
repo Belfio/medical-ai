@@ -51,7 +51,11 @@ export default function ModelUpload({
       return null;
     });
   };
-
+  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      Array.from(e.target.files).forEach((file) => addFile(file));
+    }
+  };
   return (
     <div className={cn("max-w-4xl mx-auto", className)}>
       <div className="bg-white rounded  mb-6">
@@ -63,10 +67,10 @@ export default function ModelUpload({
           <input
             type="file"
             multiple
-            onChange={(e) => setFiles(e.target.files)}
+            onChange={(e) => handleInput(e)}
             title="Upload your model files"
-            className="absolute w-full h-full custom-file-input"
-            name="modelFile"
+            className="absolute w-full h-full custom-file-input opacity-0"
+            name="notebookFile"
           />
           <button className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
             Select Files

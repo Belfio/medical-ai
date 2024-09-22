@@ -36,7 +36,7 @@ export const loader = async () => {
   try {
     const models: ModelType[] = await db.model.getByRanking();
     const datasets: DatasetType[] = await db.dataset.getByRanking();
-    console.log("models", models);
+    // console.log("models", models);
     return json({ models, datasets });
   } catch (error) {
     console.error(error);

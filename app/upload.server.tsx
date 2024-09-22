@@ -5,10 +5,11 @@ export const s3UploaderHandler: <T extends UploadHandlerPart>(
   props: T,
   valueId: string
 ) => Promise<string> = async (props, valueId) => {
-  console.log("props", props);
-  console.log("modelId", valueId);
+  // console.log("props", props);
+  // console.log("modelId", valueId);
   const { filename, data, contentType } = props;
-
+  console.log("filename", filename);
+  console.log("contentType", contentType);
   if (!filename || !data || !contentType) {
     // Collect all chunks of data
     const chunks = [];
