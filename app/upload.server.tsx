@@ -3,8 +3,9 @@ import s3 from "./lib/s3";
 
 export const s3UploaderHandler: <T extends UploadHandlerPart>(
   props: T,
-  valueId: string
-) => Promise<string> = async (props, valueId) => {
+  valueId: string,
+  folder: "models" | "datasets"
+) => Promise<string> = async (props, valueId, folder) => {
   // console.log("props", props);
   // console.log("modelId", valueId);
   const { filename, data, contentType } = props;
@@ -27,25 +28,16 @@ export const s3UploaderHandler: <T extends UploadHandlerPart>(
     return bufferString;
   }
   let s3FileName = filename;
-  switch (props.name) {
-    case "modelFile":
-      s3FileName = `model-${valueId.slice(0, 5)}-${filename}`;
+  switch (folder) {
+    case "models":
+      s3FileName = `${valueId.slice(0, 5)}/${filename}`;
       return await s3.models.upload(data, s3FileName, contentType);
-      break;
-    case "notebookFile":
-      s3FileName = `notebook-${valueId.slice(0, 5)}-${filename}`;
-      return await s3.models.upload(data, s3FileName, contentType);
-      break;
-    case "datasetFile":
-      s3FileName = `datasetFile-${valueId.slice(0, 5)}-${
-        filename.split(".")[0]
-      }.zip`;
+    case "datasets":
+      s3FileName = `${valueId.slice(0, 5)}/${filename.split(".")[0]}.zip`;
       return await s3.datasets.upload(data, s3FileName, contentType);
-      break;
     default:
       break;
   }
-  return await s3.datasets.upload(data, s3FileName, contentType);
 };
 
 export const externalLinkUploader = async (

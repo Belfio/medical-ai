@@ -12,6 +12,7 @@ import {
   useActionData,
   useFetcher,
   useLoaderData,
+  useNavigation,
   useSubmit,
 } from "@remix-run/react";
 import db from "~/lib/db";
@@ -28,60 +29,42 @@ import ModelQuestionnaire from "~/components/ModelQuestionnaire";
 import ModelUploadSmall from "~/components/UploadSmall";
 
 export default function ModelAdd() {
-  const submit = useSubmit();
   const fetcher = useFetcher();
   const error = useActionData<typeof action>() as {
     error: string;
     missingFields: string[];
   };
   const { datasets, diseases } = useLoaderData<typeof loader>();
+  // create a reducer
 
   const [files, setFiles] = useState<FileList | null>(null);
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    console.log("pobaaaa");
-    e.preventDefault();
-    console.log("files", files?.length);
-    console.log("e.currentTarget", e.currentTarget.elements);
-    console.log(
-      "files",
-      Array.from(files).map((file) => file.name)
-    );
-    if (!files) return;
-    // can I merge the 2 files and send them in a single formdata?
-    const formData = new FormData();
-    formData.append("notebookFile", files[0]);
-    formData.append("modelFile", files[1]);
-    return await fetcher.submit(formData, {
-      method: "post",
-      encType: "multipart/form-data", // Change this line
-      action: "/models/add/file",
-    });
-    if (!files) return;
-    console.log("files", files.length);
-    // posso provare a fare un altro encoding dove creo un json con key il file name e value il file content e poi stringiy/blob e mando quello al submit?
 
-    Array.from(files).forEach(async (file) => {
-      console.log("file", file);
-      const formData = new FormData();
-      formData.append("notebookFile", file);
-      await submit(formData, {
-        encType: "multipart/form-data",
-        method: "post",
-        action: "/models/add/file",
-      });
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget as HTMLFormElement);
+    // Print formData values
+    for (const [key, value] of formData.entries()) {
+      console.log(`${key}: ${value}`);
+    }
+
+    if (!files) return;
+
+    Array.from(files).map((file) => formData.append(file.name, file));
+
+    console.log("sending files?", files.length);
+    await fetcher.submit(formData, {
+      method: "post",
+      encType: "multipart/form-data",
+      action: "/models/add/file",
     });
   };
   return (
-    <>
-      <fetcher.Form
-        method="post"
-        className="flex flex-col gap-4 max-w-[540px]"
-        encType="multipart/form-data"
-        onSubmit={handleSubmit}
-      >
-        <h1>Upload your model</h1>
-        {files?.length && files?.length > 0 ? (
-          <>
+    <div className="flex flex-col gap-4 max-w-[540px]">
+      <h1>Upload your model</h1>
+      {files?.length && files?.length > 0 ? (
+        <>
+          <fetcher.Form method="post" onSubmit={handleSubmit}>
+            <input type="hidden" name="stogazzo" value="poba" />
             <ModelQuestionnaire datasets={datasets} diseases={diseases} />
             <ModelUploadSmall
               files={files}
@@ -99,10 +82,11 @@ export default function ModelAdd() {
             <Button type="submit" name="button">
               Submit
             </Button>
-          </>
-        ) : (
-          <>
-            {/* <div className="flex items-center gap-2">
+          </fetcher.Form>
+        </>
+      ) : (
+        <>
+          {/* <div className="flex items-center gap-2">
           <CircleAlert className="text-yellow-600 w-12" />
           <p className="text-sm text-yellow-600">
             Please note that the model needs to work on at least one dataset to
@@ -112,9 +96,9 @@ export default function ModelAdd() {
             </Link>
           </p>
         </div> */}
-            <Upload files={files} setFiles={setFiles} className="mt-6" />
-
-            <Alert>
+          <Upload files={files} setFiles={setFiles} className="mt-6" />
+          <div className="max-w-4xl mx-auto px-8">
+            <Alert className=" mx-auto">
               <AlertCircle className="h-4 w-4" />
               <AlertTitle>Supported Formats</AlertTitle>
               <AlertDescription>
@@ -141,10 +125,10 @@ export default function ModelAdd() {
                 </li>
               </ul>
             </div>
-          </>
-        )}
-      </fetcher.Form>
-    </>
+          </div>
+        </>
+      )}
+    </div>
   );
 }
 export const loader = async () => {
@@ -155,7 +139,10 @@ export const loader = async () => {
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
+  const formDataa = await request.formData();
+  console.log("formData", formDataa);
   return json({ error: "test" }, { status: 400 });
+
   const modelId = randomId();
   console.log("model id", modelId);
   const s3uploaderWithId: UploadHandler = (props: UploadHandlerPart) =>

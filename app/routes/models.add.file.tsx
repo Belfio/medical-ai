@@ -14,17 +14,15 @@ import { s3UploaderHandler } from "~/upload.server";
 export const action = async ({ request }: ActionFunctionArgs) => {
   console.log("model add file");
   const modelId = randomId();
-  console.log("model id", modelId);
+  const folder = "models";
   const s3uploaderWithId: UploadHandler = (props: UploadHandlerPart) =>
-    s3UploaderHandler(props, modelId);
+    s3UploaderHandler(props, modelId, folder);
+
   const formData = await unstable_parseMultipartFormData(
     request,
     s3uploaderWithId
   );
-  const notebookFile = formData.getAll("notebookFile");
 
-  console.log("notebookFile", notebookFile);
-  return redirect("/models");
   const name = formData.get("name");
   const description = formData.get("description");
   const author = formData.get("author");
@@ -33,14 +31,12 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const diseaseIds = formData.get("diseaseId");
   const diseaseCategories = formData.get("diseaseCategories");
   const bodyParts = formData.get("bodyParts");
-  const modelFile = formData.get("modelFile");
   const dataType = formData.get("dataType");
   const datasetIds = formData.get("datasetIds");
   if (
     !name ||
     !description ||
     !author ||
-    !notebookFile ||
     !diseaseIds ||
     !diseaseCategories ||
     !dataType ||
@@ -52,7 +48,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     if (!author) missingFields.push("author");
     if (!diseaseIds) missingFields.push("diseaseIds");
     if (!diseaseCategories) missingFields.push("diseaseCategories");
-    if (!notebookFile) missingFields.push("notebookFile");
     if (!dataType) missingFields.push("dataType");
     if (!datasetIds) missingFields.push("datasetIds");
     return json(
@@ -68,8 +63,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     description: description as string,
     createdAt: new Date().toISOString(),
     ranking: 0,
-    notebookFile: notebookFile as string,
-    modelFile: modelFile as string,
     website: website as string,
     tConst: "metadata",
     diseaseIds: diseaseIds as string,

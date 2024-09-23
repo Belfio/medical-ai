@@ -27,9 +27,7 @@ export interface ModelType {
   author: string;
   size: string;
   description: string;
-  notebookFile: string;
   website: string;
-  modelFile: string;
   test?: ModelTestingType;
   training?: ModelTrainingType;
   datasetIds?: string;

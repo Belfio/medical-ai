@@ -79,6 +79,7 @@ export default function ModelUploadSmall({
               title="Upload your model files"
               className="absolute w-full h-full custom-file-input"
               name="notebookFile"
+              readOnly
             />
             <button className="mt-2 text-blue-500 flex items-center">
               <Plus size={16} className="mr-1" /> Add More Files
