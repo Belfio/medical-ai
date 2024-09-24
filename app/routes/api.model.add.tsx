@@ -60,18 +60,20 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
   const size = getFilesSize(modelId);
   console.log("datasets", datasets);
-  const diseaseCategories = datasets
-    .map((dataset) => JSON.parse(dataset.diseaseCategory))
-    .flat();
-  const bodyParts = datasets
-    .map((dataset) => JSON.parse(dataset.bodyParts))
-    .flat();
-  const dataType = datasets
-    .map((dataset) => JSON.parse(dataset.dataType))
-    .flat();
-  const diseaseIds = datasets
-    .map((dataset) => JSON.parse(dataset.diseaseIds))
-    .flat();
+  const diseaseCategories = Array.from(
+    new Set(
+      datasets.map((dataset) => JSON.parse(dataset.diseaseCategory)).flat()
+    )
+  );
+  const bodyParts = Array.from(
+    new Set(datasets.map((dataset) => JSON.parse(dataset.bodyParts)).flat())
+  );
+  const dataType = Array.from(
+    new Set(datasets.map((dataset) => JSON.parse(dataset.dataType)).flat())
+  );
+  const diseaseIds = Array.from(
+    new Set(datasets.map((dataset) => JSON.parse(dataset.diseaseIds)).flat())
+  );
   // create the object dataset to save in the table dataset
   const model: ModelType = {
     modelId: modelId,
@@ -88,7 +90,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     size: size as string,
     datasetIds: JSON.stringify(datasetIds),
     diseaseCategory: JSON.stringify(diseaseCategories) as string,
-    dataType: String(dataType) as string,
+    dataType: JSON.stringify(dataType) as string,
     statusTesting: "PENDING",
   };
 

@@ -16,6 +16,7 @@ export default function ModelPage() {
   if (!model) {
     return <div>Model not found</div>;
   }
+  console.log("model", model);
 
   return (
     <>
@@ -36,7 +37,6 @@ export default function ModelPage() {
             <input type="hidden" name="modelId" value={model.modelId} />
           </Form>
         </div>
-        
       </div>
       <div className="font-sans p-4">
         <h1 className="text-3xl">Model: {model.modelId}</h1>
@@ -51,9 +51,7 @@ export default function ModelPage() {
             <p>Created At: {new Date(model.createdAt).toLocaleDateString()}</p>
             <p>Website: {model.website}</p>
             <p>Size: {model.size || "N/A"}</p>
-            <p>Data Type: {JSON.parse(model.dataType).join(", ")}</p>
-            <p>Notebook File: {model.notebookFile}</p>
-            <p>Model File: {model.modelFile}</p>
+            {/* <p>Data Type: {JSON.parse(model.dataType).join(", ")}</p> */}
             <p>Ranking: {model.ranking}</p>
             <p>User ID: {model.userId}</p>
             <h3 className="text-lg font-medium">Body Parts</h3>
