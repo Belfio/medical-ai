@@ -20,18 +20,24 @@ async function uploadFileFromS3(s3Path: string) {
       media: media,
       fields: "id",
     });
-    console.log("response", response);
+    // console.log("response", response);
     const permissions = {
       type: "user",
       role: "writer",
-      emailAddress: "a.belfiori@gmail.com", // 'user@partner.com',
+      emailAddress: "a.belfiori@gmail.com",
     };
-    const response2 = await drive.permissions.create({
-      resource: permissions,
+    if (!response.data.id) {
+      throw new Error("Error uploading file to Google Drive");
+    }
+
+    const permissionResponse = await drive.permissions.create({
+      requestBody: permissions,
       fileId: response.data.id,
       fields: "id",
     });
-    console.log("response2 ID", response2.data.id);
+    if (permissionResponse.status !== 200) {
+      throw new Error("Error setting permissions on Google Drive");
+    }
     return response.data.id;
   } catch (error) {
     console.error(
@@ -42,7 +48,7 @@ async function uploadFileFromS3(s3Path: string) {
   }
 }
 
-// Function to simulate a click on the "Run All" button
+// Selenium function to simulate a click on the "Run All" button
 function runAllCells(driver: WebDriver) {
   driver
     .findElement(
@@ -52,8 +58,8 @@ function runAllCells(driver: WebDriver) {
     .then(() => driver.sleep(300000)); // Wait for 5 minutes (can be adjusted)
 }
 
-// High-level function to manage the entire Colab running process
-function runColab(colabUrl: string) {
+// High-level function to manage the entire Colab running process with Selenium
+export function runColab(colabUrl: string) {
   const driver = new Builder().forBrowser(Browser.SAFARI).build();
 
   return driver
