@@ -204,7 +204,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const datasetId = randomId();
 
   const s3uploaderWithId: UploadHandler = (props: UploadHandlerPart) =>
-    s3UploaderHandler(props, datasetId);
+    s3UploaderHandler(props, datasetId, "datasets");
 
   const formData = await unstable_parseMultipartFormData(
     request,

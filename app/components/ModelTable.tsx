@@ -66,7 +66,7 @@ const ModelsTable: React.FC<ModelsTableProps> = ({ models, className }) => {
             </TableCell>
             <TableCell>{model.statusTesting}</TableCell>
             <TableCell>
-              <Form action="/api/modelRemove" method="post">
+              <Form action="/api/model/remove" method="post">
                 <Button variant="ghost" name="action" value="remove">
                   <input type="hidden" name="modelId" value={model.modelId} />
                   <Trash className="w-4 h-4" />

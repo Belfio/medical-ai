@@ -8,6 +8,7 @@ export const s3UploaderHandler: <T extends UploadHandlerPart>(
 ) => Promise<string> = async (props, valueId, folder) => {
   const { filename, data, contentType } = props;
 
+  // If it is not a file, I'll hadle it!
   if (!filename || !data || !contentType) {
     // Collect all chunks of data
     const chunks = [];
@@ -24,14 +25,17 @@ export const s3UploaderHandler: <T extends UploadHandlerPart>(
 
     return bufferString;
   }
-  let s3FileName = filename;
-  console.log("s3FileName", s3FileName);
+
+  // If it is a file, I'll upload it to S3
+  let s3FileName = "";
   switch (folder) {
     case "models":
-      s3FileName = `${valueId.slice(0, 5)}/${filename}`;
+      s3FileName = `${valueId}/${filename}`;
+      console.log("s3FileName", s3FileName);
       return await s3.models.upload(data, s3FileName, contentType);
     case "datasets":
-      s3FileName = `${valueId.slice(0, 5)}/${filename.split(".")[0]}.zip`;
+      s3FileName = `${valueId}/${filename.split(".")[0]}.zip`;
+      console.log("s3FileName", s3FileName);
       return await s3.datasets.upload(data, s3FileName, contentType);
     default:
       break;

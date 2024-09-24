@@ -31,7 +31,7 @@ export default function ModelAdd() {
     await fetcher.submit(formData, {
       method: "post",
       encType: "multipart/form-data",
-      action: "/api/modelAddFile",
+      action: "/api/model/add",
     });
   };
 

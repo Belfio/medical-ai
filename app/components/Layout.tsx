@@ -1,4 +1,3 @@
-import AddModelSheet from "./AddModelSheet";
 import Header from "./Header";
 import ListNav from "./ListNav";
 import { Outlet } from "@remix-run/react";
@@ -14,7 +13,6 @@ export default function DashboardLayout() {
         <div className="flex">
           {/* SideBar */}
           <div className="w-1/6 min-w-64">
-            <AddModelSheet />
             <ListNav />
           </div>
           <div className="w-5/6 bg-white p-4">
