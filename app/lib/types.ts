@@ -32,6 +32,7 @@ export interface ModelType {
   training?: ModelTrainingType;
   datasetIds?: string;
   diseaseCategory: string;
+  statusTesting: "PENDING" | "APPROVED" | "REJECTED";
 }
 
 export interface ModelTestingType {

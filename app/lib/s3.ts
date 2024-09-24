@@ -38,10 +38,10 @@ const uploadStreamToS3 = async (
     }),
     { expiresIn: 15 * 60 }
   );
-
-  console.log(url);
-
-  return key;
+  if (!url) {
+    throw new Error("Failed to get signed url");
+  }
+  return url;
 };
 
 const getObjectFromS3 = async (key: string, bucketName: string) => {

@@ -1,9 +1,4 @@
-import {
-  Link,
-  useActionData,
-  useFetcher,
-  useLoaderData,
-} from "@remix-run/react";
+import { useActionData, useFetcher, useLoaderData } from "@remix-run/react";
 import db from "~/lib/db";
 import { Button } from "~/components/ui/button";
 import { useState } from "react";
@@ -22,7 +17,7 @@ export default function ModelAdd() {
     error: string;
     missingFields: string[];
   };
-  const { datasets, diseases } = useLoaderData<typeof loader>();
+  const { datasets } = useLoaderData<typeof loader>();
   const [selectedDatasets, setDatasets] = useState<string[]>([]);
 
   const [files, setFiles] = useState<FileList | null>(null);
@@ -47,11 +42,12 @@ export default function ModelAdd() {
   return (
     <div className="flex flex-col gap-4 max-w-[540px]">
       <h1>Upload your model</h1>
+      {JSON.stringify(selectedDatasets)}
       {turnPage ? (
         <>
           <fetcher.Form method="post" onSubmit={handleSubmit}>
             <input type="hidden" name="stogazzo" value="poba" />
-            <ModelQuestionnaire datasets={datasets} diseases={diseases} />
+            <ModelQuestionnaire />
             <ModelUploadSmall
               files={files}
               setFiles={setFiles}
@@ -65,6 +61,11 @@ export default function ModelAdd() {
                 Missing fields: {error.missingFields.join(", ")}
               </p>
             )}{" "}
+            <input
+              type="hidden"
+              name="datasetIds"
+              value={JSON.stringify(selectedDatasets)}
+            />
             <Button type="submit" name="button">
               Submit
             </Button>
@@ -93,11 +94,6 @@ export default function ModelAdd() {
               onValuesChange={setDatasets}
             />
 
-            <input
-              type="hidden"
-              name="datasetIds"
-              value={JSON.stringify(selectedDatasets)}
-            />
             <h2 className="mt-8 text-xl font-bold">
               Step 2: Upload your model
             </h2>
@@ -111,7 +107,6 @@ export default function ModelAdd() {
 }
 export const loader = async () => {
   const datasets = await db.dataset.getByLatest();
-  const diseases = await db.disease.getByLatest(100);
   console.log("datasets length", datasets.length);
-  return { datasets, diseases };
+  return { datasets };
 };

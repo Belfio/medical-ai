@@ -6,11 +6,8 @@ export const s3UploaderHandler: <T extends UploadHandlerPart>(
   valueId: string,
   folder: "models" | "datasets"
 ) => Promise<string> = async (props, valueId, folder) => {
-  // console.log("props", props);
-  // console.log("modelId", valueId);
   const { filename, data, contentType } = props;
-  console.log("filename", filename);
-  console.log("contentType", contentType);
+
   if (!filename || !data || !contentType) {
     // Collect all chunks of data
     const chunks = [];
@@ -23,11 +20,12 @@ export const s3UploaderHandler: <T extends UploadHandlerPart>(
 
     // Convert buffer to string
     const bufferString = buffer.toString();
-    console.log("bufferString", bufferString);
+    // console.log("bufferString", bufferString);
 
     return bufferString;
   }
   let s3FileName = filename;
+  console.log("s3FileName", s3FileName);
   switch (folder) {
     case "models":
       s3FileName = `${valueId.slice(0, 5)}/${filename}`;

@@ -387,7 +387,7 @@ const MultiSelectorComplete = ({
 }: {
   values: (string | undefined)[];
   placeholder: string;
-  onValuesChange: (value: (undefined | string)[]) => void;
+  onValuesChange: (value: string[]) => void;
   options: { label: string; value: string }[];
   arrow?: boolean;
 }) => {
