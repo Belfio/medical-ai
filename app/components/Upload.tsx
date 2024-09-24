@@ -25,10 +25,10 @@ export default function ModelUpload({
 }: {
   className?: string;
   files: FileList | null;
-  setFiles: React.Dispatch<React.SetStateAction<FileList>>;
+  setFiles: React.Dispatch<React.SetStateAction<FileList | null>>;
 }) {
   const addFile = (file: File) => {
-    setFiles((prevFiles: FileList) => {
+    setFiles((prevFiles: FileList | null) => {
       const dataTransfer = new DataTransfer();
       if (prevFiles) {
         Array.from(prevFiles).forEach((f) => dataTransfer.items.add(f));
@@ -39,7 +39,7 @@ export default function ModelUpload({
   };
 
   const removeFile = (file: File) => {
-    setFiles((prevFiles: FileList) => {
+    setFiles((prevFiles: FileList | null) => {
       if (prevFiles) {
         const dataTransfer = new DataTransfer();
         Array.from(prevFiles).forEach((f) => {

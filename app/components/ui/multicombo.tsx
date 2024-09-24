@@ -241,7 +241,7 @@ const MultiSelectorTrigger = forwardRef<
     >
       {value.map((item, index) => (
         <Badge
-          key={item}
+          key={index}
           className={cn(
             "pl-2 pr-1 rounded-xl flex items-center gap-1",
             activeIndex === index && "ring-2 ring-muted-foreground "
@@ -261,7 +261,7 @@ const MultiSelectorTrigger = forwardRef<
           </button>
         </Badge>
       ))}
-      {children}
+      {value.length === 0 && children}
     </div>
   );
 });

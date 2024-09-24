@@ -36,7 +36,7 @@ export default function Index() {
       </p>
       <h2 className="mt-8 mb-2">Contribute</h2>
       <div className="flex  gap-2 border-dark  max-w-sm justify-between">
-        <Link to="/datasets-add">
+        <Link to="/datasets/add">
           <div className="border-2 rounded-sm p-4 text-center hover:bg-accent transition duration-300 ease-in-out">
             <h3>Add your Dataset</h3>
 

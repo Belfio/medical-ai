@@ -50,14 +50,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   await Promise.all(
     datasetIds.map(async (datasetId) => {
       const dataset = await db.dataset.get(datasetId);
+      if (!dataset) return;
       datasets = [...datasets, dataset];
-
-      if (!dataset) {
-        return json(
-          { error: `Dataset ${datasetId} not found` },
-          { status: 400 }
-        );
-      }
     })
   );
   if (!datasets) {
@@ -65,18 +59,19 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   }
 
   const size = getFilesSize(modelId);
+  console.log("datasets", datasets);
   const diseaseCategories = datasets
     .map((dataset) => JSON.parse(dataset.diseaseCategory))
-    .concat();
+    .flat();
   const bodyParts = datasets
     .map((dataset) => JSON.parse(dataset.bodyParts))
-    .concat();
+    .flat();
   const dataType = datasets
     .map((dataset) => JSON.parse(dataset.dataType))
-    .concat();
+    .flat();
   const diseaseIds = datasets
     .map((dataset) => JSON.parse(dataset.diseaseIds))
-    .concat();
+    .flat();
   // create the object dataset to save in the table dataset
   const model: ModelType = {
     modelId: modelId,
@@ -86,13 +81,13 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     ranking: 0,
     website: website as string,
     tConst: "metadata",
-    diseaseIds: String(diseaseIds) as string,
-    bodyParts: String(bodyParts) as string,
+    diseaseIds: JSON.stringify(diseaseIds) as string,
+    bodyParts: JSON.stringify(bodyParts) as string,
     userId: "1",
     author: author as string,
     size: size as string,
     datasetIds: JSON.stringify(datasetIds),
-    diseaseCategory: String(diseaseCategories) as string,
+    diseaseCategory: JSON.stringify(diseaseCategories) as string,
     dataType: String(dataType) as string,
     statusTesting: "PENDING",
   };

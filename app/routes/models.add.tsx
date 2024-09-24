@@ -39,6 +39,7 @@ export default function ModelAdd() {
     files?.length && files?.length > 0 && selectedDatasets.length > 0;
   const datasetReminder =
     files?.length && files?.length > 0 && selectedDatasets.length === 0;
+
   return (
     <div className="flex flex-col gap-4 max-w-[540px]">
       <h1>Upload your model</h1>
@@ -64,7 +65,11 @@ export default function ModelAdd() {
             <input
               type="hidden"
               name="datasetIds"
-              value={JSON.stringify(selectedDatasets)}
+              value={JSON.stringify(
+                selectedDatasets.map(
+                  (l) => datasets.find((d) => d.name === l)?.datasetId
+                )
+              )}
             />
             <Button type="submit" name="button">
               Submit
@@ -81,15 +86,11 @@ export default function ModelAdd() {
             {/* Datasets */}
             <MultiSelectorComplete
               arrow
-              values={selectedDatasets.map(
-                (datasetId) =>
-                  datasets.find((dataset) => dataset.datasetId === datasetId)
-                    ?.name
-              )}
+              values={selectedDatasets}
               placeholder="Select the model's dataset"
               options={datasets.map((d: DatasetType) => ({
                 label: d.name,
-                value: d.datasetId,
+                value: d.name,
               }))}
               onValuesChange={setDatasets}
             />

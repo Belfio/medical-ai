@@ -19,7 +19,7 @@ export default function Datasets() {
     <>
       <div className="mt-2 flex gap-4">
         <h2 className="text-2xl font-semibold mb-4">Datasets</h2>
-        <Link to="/datasets-add">
+        <Link to="/datasets/add">
           <Button>Add your dataset</Button>
         </Link>
       </div>

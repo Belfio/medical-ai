@@ -22,7 +22,6 @@ import { Textarea } from "~/components/ui/textarea";
 import { s3UploaderHandler } from "~/upload.server";
 import { bodyFocus, bodyParts, categories, dataTypes } from "~/lib/const";
 import { getCategoryName, randomId } from "~/lib/utils";
-import s3 from "~/lib/s3";
 import { Resource } from "sst";
 
 export default function Datasets() {

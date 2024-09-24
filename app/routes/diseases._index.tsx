@@ -32,6 +32,7 @@ export default function Diseases() {
     });
     setDiseasesList(filteredDiseases);
   }, [selectedCategory, diseases]);
+
   return (
     <>
       <div className="mt-2 flex gap-4 ">
@@ -82,6 +83,7 @@ export const loader = async () => {
     const datasets: DatasetType[] = await db.dataset.getByLatest();
     const diseases: DiseaseType[] = await db.disease.getNItems(100);
     const models: ModelType[] = await db.model.getByLatest();
+    console.log("model disease", models);
     return json({ datasets, diseases, models });
   } catch (error) {
     console.error(error);
