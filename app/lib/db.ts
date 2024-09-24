@@ -196,9 +196,10 @@ const db = {
     },
 
     delete: async (modelId: string) => {
-      await deleteItem(Resource.Models.name, {
+      const response = await deleteItem(Resource.Models.name, {
         modelId,
       });
+      return response;
     },
   },
   dataset: {

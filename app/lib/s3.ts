@@ -1,8 +1,10 @@
 import type {
+  DeleteObjectCommandInput,
   GetObjectCommandInput,
   PutObjectCommandInput,
 } from "@aws-sdk/client-s3";
 import {
+  DeleteObjectCommand,
   GetObjectCommand,
   PutObjectCommand,
   S3Client,
@@ -81,6 +83,21 @@ async function convertToBuffer(a: AsyncIterable<Uint8Array>) {
   return Buffer.concat(result);
 }
 
+const deleteObjectFromS3 = async (key: string, bucketName: string) => {
+  const BUCKET_NAME = bucketName;
+  const params: DeleteObjectCommandInput = {
+    Bucket: BUCKET_NAME,
+    Key: key,
+  };
+  try {
+    await s3Client.send(new DeleteObjectCommand(params));
+  } catch (error) {
+    console.error("Error deleting object from S3", error);
+    return { isSuccess: false, msg: "error" };
+  }
+  return { isSuccess: true, msg: "deleted" };
+};
+
 const s3 = {
   datasets: {
     upload: (
@@ -99,6 +116,7 @@ const s3 = {
     ) => uploadStreamToS3(data, key, contentType, Resource.ModelBucket.name),
     get: (key: string) => getObjectFromS3(key, Resource.ModelBucket.name),
     getSize: (key: string) => getSize(key, Resource.ModelBucket.name),
+    delete: (key: string) => deleteObjectFromS3(key, Resource.ModelBucket.name),
   },
 };
 
