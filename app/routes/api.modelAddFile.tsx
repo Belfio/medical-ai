@@ -11,6 +11,10 @@ import { ModelType } from "~/lib/types";
 import { randomId } from "~/lib/utils";
 import { s3UploaderHandler } from "~/upload.server";
 
+// TODO:
+// this https://andrekoenig.de/articles/progressively-enhanced-file-uploads-remix
+// and  https://github.com/paalamugan/optimizing-large-file-upload-performance/blob/main/app/utils/uploadFile.ts
+
 export const action = async ({ request }: ActionFunctionArgs) => {
   console.log("model add file");
   const modelId = randomId();

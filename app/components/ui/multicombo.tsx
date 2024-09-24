@@ -9,7 +9,7 @@ import {
 } from "~/components/ui/command";
 import { cn } from "~/lib/utils";
 import { Command as CommandPrimitive } from "cmdk";
-import { X as RemoveIcon, Check } from "lucide-react";
+import { X as RemoveIcon, Check, ChevronsUpDown } from "lucide-react";
 import React, {
   KeyboardEvent,
   createContext,
@@ -383,20 +383,29 @@ const MultiSelectorComplete = ({
   onValuesChange,
   placeholder,
   options,
+  arrow = false,
 }: {
   values: (string | undefined)[];
   placeholder: string;
   onValuesChange: (value: (undefined | string)[]) => void;
   options: { label: string; value: string }[];
+  arrow?: boolean;
 }) => {
+  const handleValuesChange = (value: (string | undefined)[]) => {
+    onValuesChange(value.filter((v): v is string => v !== undefined));
+  };
+
   return (
     <MultiSelector
       values={values}
-      onValuesChange={onValuesChange}
+      onValuesChange={handleValuesChange}
       loop
       className="max-w-full"
     >
-      <MultiSelectorTrigger>
+      <MultiSelectorTrigger className="flex items-center">
+        {arrow && (
+          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+        )}
         <MultiSelectorInput placeholder={placeholder} />
       </MultiSelectorTrigger>
       <MultiSelectorContent>

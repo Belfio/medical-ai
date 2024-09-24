@@ -1,14 +1,20 @@
-import { useActionData, useFetcher, useLoaderData } from "@remix-run/react";
+import {
+  Link,
+  useActionData,
+  useFetcher,
+  useLoaderData,
+} from "@remix-run/react";
 import db from "~/lib/db";
 import { Button } from "~/components/ui/button";
 import { useState } from "react";
 
-import { AlertCircle } from "lucide-react";
-
 import Upload from "~/components/Upload";
-import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
+
 import ModelQuestionnaire from "~/components/ModelQuestionnaire";
 import ModelUploadSmall from "~/components/UploadSmall";
+import { MultiSelectorComplete } from "~/components/ui/multicombo";
+import { DatasetType } from "~/lib/types";
+import AlertSelectDataset from "~/components/AlertSelectDataset";
 
 export default function ModelAdd() {
   const fetcher = useFetcher();
@@ -17,7 +23,7 @@ export default function ModelAdd() {
     missingFields: string[];
   };
   const { datasets, diseases } = useLoaderData<typeof loader>();
-  // create a reducer
+  const [selectedDatasets, setDatasets] = useState<string[]>([]);
 
   const [files, setFiles] = useState<FileList | null>(null);
 
@@ -30,14 +36,18 @@ export default function ModelAdd() {
     await fetcher.submit(formData, {
       method: "post",
       encType: "multipart/form-data",
-      action: "/models/add/file",
+      action: "/api/modelAddFile",
     });
   };
 
+  const turnPage =
+    files?.length && files?.length > 0 && selectedDatasets.length > 0;
+  const datasetReminder =
+    files?.length && files?.length > 0 && selectedDatasets.length === 0;
   return (
     <div className="flex flex-col gap-4 max-w-[540px]">
       <h1>Upload your model</h1>
-      {files?.length && files?.length > 0 ? (
+      {turnPage ? (
         <>
           <fetcher.Form method="post" onSubmit={handleSubmit}>
             <input type="hidden" name="stogazzo" value="poba" />
@@ -62,45 +72,37 @@ export default function ModelAdd() {
         </>
       ) : (
         <>
-          {/* <div className="flex items-center gap-2">
-          <CircleAlert className="text-yellow-600 w-12" />
-          <p className="text-sm text-yellow-600">
-            Please note that the model needs to work on at least one dataset to
-            be published. Use one of the existing datasets or add a new one
-            <Link to="/datasets-add" className="underline bold">
-              here.
-            </Link>
-          </p>
-        </div> */}
-          <Upload files={files} setFiles={setFiles} className="mt-6" />
           <div className="max-w-4xl mx-auto px-8">
-            <Alert className=" mx-auto">
-              <AlertCircle className="h-4 w-4" />
-              <AlertTitle>Supported Formats</AlertTitle>
-              <AlertDescription>
-                We accept various file types including .py, .pkl, .h5, .pt,
-                .onnx, .json, .yaml, and more. Total upload size limit: 5GB
-              </AlertDescription>
-            </Alert>
+            <h2 className="mt-4 mb-2 text-xl font-bold">
+              Step 1: Select a Dataset
+            </h2>
+            <AlertSelectDataset alert={datasetReminder || false} />
+            {/* Datasets */}
+            <MultiSelectorComplete
+              arrow
+              values={selectedDatasets.map(
+                (datasetId) =>
+                  datasets.find((dataset) => dataset.datasetId === datasetId)
+                    ?.name
+              )}
+              placeholder="Select the model's dataset"
+              options={datasets.map((d: DatasetType) => ({
+                label: d.name,
+                value: d.datasetId,
+              }))}
+              onValuesChange={setDatasets}
+            />
 
-            <div className="mt-6">
-              <h2 className="text-xl font-semibold mb-2">
-                Upload Requirements
-              </h2>
-              <ul className="list-disc pl-5">
-                <li>
-                  Include all necessary files for your model (e.g., weights,
-                  config, preprocessor)
-                </li>
-                <li>Provide a requirements.txt file for any dependencies</li>
-                <li>
-                  Include a README.md with instructions on how to use your model
-                </li>
-                <li>
-                  Ensure your files don&apos;t contain sensitive information
-                </li>
-              </ul>
-            </div>
+            <input
+              type="hidden"
+              name="datasetIds"
+              value={JSON.stringify(selectedDatasets)}
+            />
+            <h2 className="mt-8 text-xl font-bold">
+              Step 2: Upload your model
+            </h2>
+
+            <Upload files={files} setFiles={setFiles} className="mt-3" />
           </div>
         </>
       )}

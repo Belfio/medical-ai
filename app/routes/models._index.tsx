@@ -1,6 +1,8 @@
 import { json, Link, useLoaderData } from "@remix-run/react";
+// import { useContext } from "react";
 import { ModelsFilters } from "~/components/ModelsFilters";
 import ModelsTable from "~/components/ModelTable";
+// import { SheetContext } from "~/components/providers/SheetProvider";
 import { Button } from "~/components/ui/button";
 import { useFilters } from "~/hooks/useFilters";
 
@@ -14,7 +16,7 @@ export default function Models() {
     datasets: DatasetType[];
   };
   const { data, handleFilterChange } = useFilters({ data: models });
-
+  // const { modelSheetOpen, setModelSheetOpen } = useContext(SheetContext);
   return (
     <>
       <div className="mt-2 flex gap-4">

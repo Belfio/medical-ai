@@ -1,6 +1,7 @@
-import { Upload, Plus, X } from "lucide-react";
+import { Upload, Plus, X, AlertCircle } from "lucide-react";
 
 import { cn } from "~/lib/utils";
+import { Alert, AlertTitle, AlertDescription } from "./ui/alert";
 
 const FileItem = ({
   name,
@@ -76,8 +77,16 @@ export default function ModelUpload({
             Select Files
           </button>
         </div>
+        <Alert className=" mx-auto mt-2">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Supported Formats</AlertTitle>
+          <AlertDescription>
+            We accept various file types including .py, .pkl, .h5, .pt, .onnx,
+            .json, .yaml, and more. Total upload size limit: 5GB
+          </AlertDescription>
+        </Alert>
         <div className="mt-4">
-          <h3 className="font-semibold">Uploaded Files:</h3>
+          <h4 className="font-semibold">Uploaded Files:</h4>
           {files &&
             Array.from(files).map((file) => (
               <FileItem
@@ -104,6 +113,20 @@ export default function ModelUpload({
               <Plus size={16} className="mr-1" /> Add More Files
             </button>
           </div>
+        </div>
+        <div className="mt-6">
+          <h4 className=" font-semibold mb-2">Upload Requirements</h4>
+          <ul className="list-disc pl-5 text-sm text-gray-600">
+            <li>
+              Include all necessary files for your model (e.g., weights, config,
+              preprocessor)
+            </li>
+            <li>Provide a requirements.txt file for any dependencies</li>
+            <li>
+              Include a README.md with instructions on how to use your model
+            </li>
+            <li>Ensure your files don&apos;t contain sensitive information</li>
+          </ul>
         </div>
       </div>
     </div>
