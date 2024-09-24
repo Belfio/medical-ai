@@ -43,7 +43,6 @@ export default function ModelAdd() {
   return (
     <div className="flex flex-col gap-4 max-w-[540px]">
       <h1>Upload your model</h1>
-      {JSON.stringify(selectedDatasets)}
       {turnPage ? (
         <>
           <fetcher.Form method="post" onSubmit={handleSubmit}>

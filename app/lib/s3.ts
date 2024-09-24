@@ -46,7 +46,10 @@ const uploadStreamToS3 = async (
   return url;
 };
 
-const getObjectFromS3 = async (key: string, bucketName: string) => {
+const getBufferFromS3 = async (
+  key: string,
+  bucketName: string
+): Promise<Buffer> => {
   const BUCKET_NAME = bucketName;
   const params: GetObjectCommandInput = {
     Bucket: BUCKET_NAME,
@@ -62,6 +65,22 @@ const getObjectFromS3 = async (key: string, bucketName: string) => {
   const fileContent = Buffer.concat(chunks);
 
   return fileContent;
+};
+
+const getStreamFromS3 = async (
+  key: string,
+  bucketName: string
+): Promise<Readable> => {
+  const BUCKET_NAME = bucketName;
+  const params: GetObjectCommandInput = {
+    Bucket: BUCKET_NAME,
+    Key: key,
+  };
+  const data = await s3Client.send(new GetObjectCommand(params));
+  // Read the stream completely
+  const stream = data.Body as Readable;
+
+  return stream;
 };
 
 const getSize = async (key: string, bucketName: string) => {
@@ -114,7 +133,8 @@ const s3 = {
       key: string,
       contentType: string
     ) => uploadStreamToS3(data, key, contentType, Resource.ModelBucket.name),
-    get: (key: string) => getObjectFromS3(key, Resource.ModelBucket.name),
+    get: (key: string) => getBufferFromS3(key, Resource.ModelBucket.name),
+    getStream: (key: string) => getStreamFromS3(key, Resource.ModelBucket.name),
     getSize: (key: string) => getSize(key, Resource.ModelBucket.name),
     delete: (key: string) => deleteObjectFromS3(key, Resource.ModelBucket.name),
   },

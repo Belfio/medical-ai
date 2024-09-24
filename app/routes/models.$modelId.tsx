@@ -4,11 +4,12 @@ import {
   LoaderFunctionArgs,
   redirect,
 } from "@remix-run/node";
-import { Form, Link, Outlet, useLoaderData } from "@remix-run/react";
+import { Form, Link, useLoaderData } from "@remix-run/react";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import db from "~/lib/db";
 import { ModelTestType, ModelType } from "~/lib/types";
+import ds from "~/server/model.server";
 
 export default function ModelPage() {
   const model = useLoaderData<ModelType>();
@@ -38,6 +39,12 @@ export default function ModelPage() {
           </Form>
         </div>
       </div>
+      <Form method="POST" className="flex gap-2">
+        <Button name="action" value="testing">
+          Testing
+        </Button>
+        <input type="hidden" name="modelId" value={model.modelId} />
+      </Form>
       <div className="font-sans p-4">
         <h1 className="text-3xl">Model: {model.modelId}</h1>
         <div className="card">
@@ -131,6 +138,13 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     console.log("removing model");
     await db.model.delete(modelId as string);
     return redirect(`/models`);
+  }
+  const action = formData.get("action");
+  if (action === "testing") {
+    console.log("testing model");
+    const s3Path = modelId + "/" + "prova.ipynb";
+    console.log("s3Path", s3Path);
+    await ds.testModel(s3Path);
   }
   return redirect(`/models/${modelId}`);
 };
