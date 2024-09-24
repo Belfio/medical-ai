@@ -19,16 +19,20 @@ export default function Diseases() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>();
   const [diseasesList, setDiseasesList] = useState<DiseaseType[]>(diseases);
   const handleDiseaseChange = (value: string) => {
-    console.log(value);
     const disease = diseases.find((disease) => disease.name === value);
     navigate(`/diseases/${disease?.diseaseId}`);
   };
   const handleCategoryChange = (value: string) => {
+    console.log(value);
+
     setSelectedCategory(value);
   };
   useEffect(() => {
+    const categoryId = categories.find(
+      (category) => category.categoryName === selectedCategory
+    )?.categoryId;
     const filteredDiseases = diseases.filter((disease) => {
-      return selectedCategory ? disease.categoryId === selectedCategory : true;
+      return categoryId ? disease.categoryId === categoryId : true;
     });
     setDiseasesList(filteredDiseases);
   }, [selectedCategory, diseases]);
