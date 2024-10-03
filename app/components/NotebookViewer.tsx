@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
-
+import Prova from "~/assets/prova.ipynb";
 // SyntaxHighlighter.registerLanguage("javascript", javascript);
 
 interface Cell {
@@ -9,13 +9,14 @@ interface Cell {
   source: string[];
 }
 
-const NotebookViewer: React.FC<{ notebookUrl: JSON }> = ({ notebookUrl }) => {
+const NotebookViewer: React.FC<{ notebookUrl?: JSON }> = ({ notebookUrl }) => {
   const [cells, setCells] = useState<Cell[]>([]);
-
-  useEffect(() => {
-    setCells(notebookUrl.cells);
-  }, [notebookUrl]);
-
+  console.log("notebookUrl", Prova);
+  // useEffect(() => {
+  //   setCells(Prova.cells);
+  //   // setCells(notebookUrl.cells);
+  // }, [notebookUrl]);
+  return <>Ciaos</>;
   return (
     <div>
       {cells.map((cell, index) => {

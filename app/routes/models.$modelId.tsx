@@ -5,6 +5,8 @@ import {
   redirect,
 } from "@remix-run/node";
 import { Form, Link, useLoaderData } from "@remix-run/react";
+import { Trash } from "lucide-react";
+import PythonEditor from "~/components/PythonEditor";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import db from "~/lib/db";
@@ -15,29 +17,40 @@ export default function ModelPage() {
   const model = useLoaderData<ModelType>();
 
   if (!model) {
-    return <div>Model not found</div>;
+    return <>Something went wrong</>;
   }
   console.log("model", model);
 
   return (
     <>
-      <div className="flex flex-row gap-2">
-        <div className="w-1/2 p-4 flex-col space-y-8">
-          <div className="flex items-center gap-2">
-            <h1>{model.name}</h1>
-            <Badge>{model.modelId}</Badge>
+      <div className="flex flex-row gap-2 max-w-screen-lg justify-between">
+        <div className="w-1/2 flex-col space-y-8">
+          <div className="flex items-baseline gap-2">
+            <h1 className="text-4xl font-bold">{model.name}</h1>
+            {/* <Badge>{model.modelId}</Badge> */}
+            <Form method="POST" className="">
+              <Link to={`/models/${model.modelId}/edit`}>
+                <Button variant="link">Edit</Button>
+              </Link>
+              <input type="hidden" name="modelId" value={model.modelId} />
+            </Form>
           </div>
           <p>{model.description}</p>
-          <Form method="POST" className="flex gap-2">
-            <Link to={`/models/${model.modelId}/edit`}>
-              <Button variant="outline">Edit</Button>
-            </Link>
-            <Button type="submit" name="remove" value={model.modelId}>
-              Remove
-            </Button>
-            <input type="hidden" name="modelId" value={model.modelId} />
-          </Form>
         </div>
+        <Button
+          type="submit"
+          name="remove"
+          value={model.modelId}
+          className="mt-2"
+          variant="outline"
+        >
+          <Trash className="w-4 h-4" />
+        </Button>
+      </div>
+
+      <div className="max-w-screen-lg my-4">
+        <h2 className="text-2xl font-bold my-2">Testing code</h2>
+        <PythonEditor />
       </div>
       <Form method="POST" className="flex gap-2">
         <Button name="action" value="testing">
