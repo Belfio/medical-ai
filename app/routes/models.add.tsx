@@ -1,32 +1,20 @@
-import {
-  Form,
-  Outlet,
-  ShouldRevalidateFunction,
-  useActionData,
-  useFetcher,
-  useLoaderData,
-} from "@remix-run/react";
+import { Form, Outlet, useActionData, useLoaderData } from "@remix-run/react";
 import db from "~/lib/db";
 import { Button } from "~/components/ui/button";
 import { useContext, useState } from "react";
-
 import ModelQuestionnaire from "~/components/ModelQuestionnaire";
-
 import { MultiSelectorComplete } from "~/components/ui/multicombo";
 import { DatasetType } from "~/lib/types";
 import AlertSelectDataset from "~/components/AlertSelectDataset";
 // import ModelNotebook from "~/components/ModelNotebook";
-import { Input } from "~/components/ui/input";
+
 import {
   ActionFunctionArgs,
   LoaderFunctionArgs,
   redirect,
 } from "@remix-run/node";
-import { GithubInfo } from "./models.add.github";
-import {
-  GithubContext,
-  GithubProvider,
-} from "~/components/providers/GithubProvider";
+
+import { GithubContext } from "~/components/providers/GithubProvider";
 
 export default function ModelAdd() {
   const error = useActionData<typeof error>() as {
@@ -60,11 +48,11 @@ export default function ModelAdd() {
 
       <h2 className="mt-4 mb-2 text-xl font-bold">Step 1: Select a Dataset</h2>
 
-      {/* {error && error?.missingFields && (
-          <AlertSelectDataset
-            alert={error?.missingFields.includes("datasets") || false}
-          />
-        )} */}
+      {error && error?.missingFields && (
+        <AlertSelectDataset
+          alert={error?.missingFields.includes("datasets") || false}
+        />
+      )}
       {/* Datasets */}
       <MultiSelectorComplete
         arrow

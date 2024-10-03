@@ -43,7 +43,7 @@ export default function Index() {
             </div>
             <Button variant="ghost" className="p-0">
               Choose a disease or a dataset you want to work on (or upload a new
-              one).
+              one). Download it and start developing a new model for it.
             </Button>
           </Link>
         </li>
@@ -56,7 +56,8 @@ export default function Index() {
               <p>2</p>
             </div>
             <Button variant="ghost" className="p-0">
-              Submit a model by linking a github repository.
+              Submit a working model for evaluation. Post the github repository
+              url in the model submission form.
             </Button>
           </Link>
         </li>

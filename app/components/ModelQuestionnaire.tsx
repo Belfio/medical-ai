@@ -1,11 +1,6 @@
-import { categories, dataTypes, bodyParts } from "~/lib/const";
-import { DatasetType, DiseaseType } from "~/lib/types";
-import { getCategoryName } from "~/lib/utils";
-
-import { MultiSelectorComplete } from "./ui/multicombo";
 import { Textarea } from "./ui/textarea";
 import { Input } from "./ui/input";
-import { useState } from "react";
+
 import { GithubInfo } from "./providers/GithubProvider";
 
 export default function ModelQuestionnaire({
