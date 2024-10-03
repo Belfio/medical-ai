@@ -19,7 +19,7 @@ import { Input } from "~/components/ui/input";
 import { MultiSelectorComplete } from "~/components/ui/multicombo";
 import { useState } from "react";
 import { Textarea } from "~/components/ui/textarea";
-import { s3UploaderHandler } from "~/upload.server";
+import { s3UploaderHandler } from "~/server/upload.server";
 import { bodyFocus, bodyParts, categories, dataTypes } from "~/lib/const";
 import { getCategoryName, randomId } from "~/lib/utils";
 import { Resource } from "sst";

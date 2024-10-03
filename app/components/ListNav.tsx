@@ -7,6 +7,7 @@ import {
   Activity,
   House,
   MessageCircle,
+  Trophy,
 } from "lucide-react";
 import { Nav } from "./Nav";
 import { useState } from "react";
@@ -43,6 +44,11 @@ export default function ListNav() {
               title: "Competitions (soon)",
               url: "/competitions",
               icon: Activity,
+            },
+            {
+              title: "Leaderboard (soon)",
+              url: "/leaderboard",
+              icon: Trophy,
             },
             {
               title: "Members (soon)",

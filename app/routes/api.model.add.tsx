@@ -9,7 +9,7 @@ import {
 import db from "~/lib/db";
 import { DatasetType, ModelType } from "~/lib/types";
 import { randomId } from "~/lib/utils";
-import { s3UploaderHandler } from "~/upload.server";
+import { s3UploaderHandler } from "~/server/upload.server";
 
 // TODO:
 // this https://andrekoenig.de/articles/progressively-enhanced-file-uploads-remix

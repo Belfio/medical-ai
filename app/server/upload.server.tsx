@@ -1,5 +1,5 @@
 import type { UploadHandlerPart } from "@remix-run/node";
-import s3 from "./lib/s3";
+import s3 from "../lib/s3";
 
 export const s3UploaderHandler: <T extends UploadHandlerPart>(
   props: T,

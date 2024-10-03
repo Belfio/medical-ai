@@ -10,6 +10,8 @@ import ModelUploadSmall from "~/components/UploadSmall";
 import { MultiSelectorComplete } from "~/components/ui/multicombo";
 import { DatasetType } from "~/lib/types";
 import AlertSelectDataset from "~/components/AlertSelectDataset";
+import ModelNotebook from "~/components/ModelNotebook";
+import { Input } from "~/components/ui/input";
 
 export default function ModelAdd() {
   const fetcher = useFetcher();
@@ -48,6 +50,7 @@ export default function ModelAdd() {
           <fetcher.Form method="post" onSubmit={handleSubmit}>
             <input type="hidden" name="stogazzo" value="poba" />
             <ModelQuestionnaire />
+            <ModelNotebook />
             <ModelUploadSmall
               files={files}
               setFiles={setFiles}
@@ -97,7 +100,13 @@ export default function ModelAdd() {
             <h2 className="mt-8 text-xl font-bold">
               Step 2: Upload your model
             </h2>
-
+            <p className="text-sm text-gray-500 my-2">
+              Paste the URL to a Github repo containing your model:
+            </p>
+            <Input type="text" name="githubUrl" placeholder="Github URL" />
+            <p className="text-sm text-gray-500 mt-8 mb-2">
+              Or upload your model files:
+            </p>
             <Upload files={files} setFiles={setFiles} className="mt-3" />
           </div>
         </>
