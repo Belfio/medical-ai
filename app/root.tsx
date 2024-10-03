@@ -7,6 +7,7 @@ import {
 } from "@remix-run/react";
 import "./tailwind.css";
 import DashboardLayout from "./components/Layout";
+import { GithubProvider } from "./components/providers/GithubProvider";
 
 export function Layout() {
   return (
@@ -18,7 +19,9 @@ export function Layout() {
         <Links />
       </head>
       <body>
-        <DashboardLayout />
+        <GithubProvider>
+          <DashboardLayout />
+        </GithubProvider>
         <ScrollRestoration />
         <Scripts />
       </body>

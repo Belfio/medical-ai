@@ -10,7 +10,7 @@ import ModelUploadSmall from "~/components/UploadSmall";
 import { MultiSelectorComplete } from "~/components/ui/multicombo";
 import { DatasetType } from "~/lib/types";
 import AlertSelectDataset from "~/components/AlertSelectDataset";
-import ModelNotebook from "~/components/ModelNotebook";
+// import ModelNotebook from "~/components/ModelNotebook";
 import { Input } from "~/components/ui/input";
 
 export default function ModelAdd() {
