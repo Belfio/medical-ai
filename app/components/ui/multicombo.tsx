@@ -241,7 +241,7 @@ const MultiSelectorTrigger = forwardRef<
     >
       {value.map((item, index) => (
         <Badge
-          key={index}
+          key={item}
           className={cn(
             "pl-2 pr-1 rounded-xl flex items-center gap-1",
             activeIndex === index && "ring-2 ring-muted-foreground "
@@ -261,7 +261,7 @@ const MultiSelectorTrigger = forwardRef<
           </button>
         </Badge>
       ))}
-      {value.length === 0 && children}
+      {children}
     </div>
   );
 });
@@ -402,11 +402,13 @@ const MultiSelectorComplete = ({
       loop
       className="max-w-full"
     >
-      <MultiSelectorTrigger className="flex items-center">
+      <MultiSelectorTrigger className="flex items-center relative">
         {arrow && (
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50 absolute right-2 top-1/2 -translate-y-1/2" />
         )}
-        <MultiSelectorInput placeholder={placeholder} />
+        <MultiSelectorInput
+          placeholder={`${values.length === 0 ? placeholder : ""}`}
+        />
       </MultiSelectorTrigger>
       <MultiSelectorContent>
         <MultiSelectorList>
