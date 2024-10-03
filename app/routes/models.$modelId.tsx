@@ -7,14 +7,16 @@ import {
 import { Form, Link, useLoaderData } from "@remix-run/react";
 import { Trash } from "lucide-react";
 import PythonEditor from "~/components/PythonEditor";
-import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import db from "~/lib/db";
-import { ModelTestType, ModelType } from "~/lib/types";
+import { ModelType } from "~/lib/types";
 import ds from "~/server/model.server";
 
 export default function ModelPage() {
-  const model = useLoaderData<ModelType>();
+  const { model, datasetUrls } = useLoaderData<{
+    model: ModelType;
+    datasetUrls: string[];
+  }>();
 
   if (!model) {
     return <>Something went wrong</>;
@@ -23,7 +25,7 @@ export default function ModelPage() {
 
   return (
     <>
-      <div className="flex flex-row gap-2 max-w-screen-lg justify-between">
+      <div className="flex flex-row gap-2 max-w-screen-md justify-between">
         <div className="w-1/2 flex-col space-y-8">
           <div className="flex items-baseline gap-2">
             <h1 className="text-4xl font-bold">{model.name}</h1>
@@ -48,95 +50,24 @@ export default function ModelPage() {
         </Button>
       </div>
 
-      <div className="max-w-screen-lg my-4">
-        <h2 className="text-2xl font-bold my-2">Testing code</h2>
-        <PythonEditor />
+      <div className="max-w-screen-md my-8">
+        <h2 className="text-2xl font-bold">Evaluate the model</h2>
+        <p className="text-md text-gray-500 mb-4">
+          Please review and edit the code where necessary to test the model.
+          This code will run in a Google Colab notebook.
+        </p>
+        <PythonEditor
+          datasetUrl={datasetUrls[0]}
+          repoUrl={model.website}
+          repoName={model.name}
+        />
       </div>
-      <Form method="POST" className="flex gap-2">
+      <Form method="POST" className="flex gap-2 justify-end max-w-screen-md ">
         <Button name="action" value="testing">
-          Testing
+          Submit
         </Button>
         <input type="hidden" name="modelId" value={model.modelId} />
       </Form>
-      <div className="font-sans p-4">
-        <h1 className="text-3xl">Model: {model.modelId}</h1>
-        <div className="card">
-          <div className="card-header">
-            <h2 className="card-title">{model.name}</h2>
-            <p className="card-subtitle">{model.description}</p>
-          </div>
-          <div className="card-body">
-            <h3 className="text-lg font-medium">Details</h3>
-            <p>Author: {model.author}</p>
-            <p>Created At: {new Date(model.createdAt).toLocaleDateString()}</p>
-            <p>Website: {model.website}</p>
-            <p>Size: {model.size || "N/A"}</p>
-            {/* <p>Data Type: {JSON.parse(model.dataType).join(", ")}</p> */}
-            <p>Ranking: {model.ranking}</p>
-            <p>User ID: {model.userId}</p>
-            <h3 className="text-lg font-medium">Body Parts</h3>
-            <ul>
-              {JSON.parse(model.bodyParts).map(
-                (part: string, index: number) => (
-                  <li key={index}>{part}</li>
-                )
-              )}
-            </ul>
-            <h3 className="text-lg font-medium">Disease Categories</h3>
-            <ul>
-              {JSON.parse(model.diseaseCategory).map(
-                (category: string, index: number) => (
-                  <li key={index}>{category}</li>
-                )
-              )}
-            </ul>
-            <h3 className="text-lg font-medium">Dataset IDs</h3>
-            <ul>
-              {JSON.parse(model.datasetIds || "[]").map(
-                (id: string, index: number) => (
-                  <li key={index}>{id}</li>
-                )
-              )}
-            </ul>
-            <h3 className="text-lg font-medium">Disease IDs</h3>
-            <ul>
-              {model.diseaseIds.length > 0 ? (
-                JSON.parse(model.diseaseIds || "[]").map(
-                  (id: string, index: number) => <li key={index}>{id}</li>
-                )
-              ) : (
-                <li>No disease IDs</li>
-              )}
-            </ul>
-            {model.training && (
-              <>
-                <h3 className="text-lg font-medium">Training Details</h3>
-                <p>Date: {model.training.date}</p>
-                <p>DataSet ID: {model.training.datasetId}</p>
-                <p>DataSet Name: {model.training.datasetName}</p>
-                <p>Training Error: {model.training.score}</p>
-                <p>Training Accuracy: {model.training.score}</p>
-              </>
-            )}
-            {model.test && (
-              <>
-                <h3 className="text-lg font-medium">Testing Details</h3>
-                {model.test?.tests.map((test: ModelTestType, index: number) => (
-                  <div key={index}>
-                    <p>Date: {test.date}</p>
-                    <p>DataSet ID: {test.datasetId}</p>
-                    <p>DataSet Name: {test.datasetName}</p>
-                    <p>Testing Error: {test.score}</p>
-                    <p>Testing Accuracy: {test.score}</p>
-                  </div>
-                ))}
-                <h3 className="text-lg font-medium">Overall Testing Score</h3>
-                <p>{model.test?.generalScore}</p>
-              </>
-            )}
-          </div>
-        </div>
-      </div>
     </>
   );
 }
@@ -171,7 +102,14 @@ export async function loader({ params }: LoaderFunctionArgs) {
     if (!model) {
       return new Response("Model not found", { status: 404 });
     }
-    return json(model);
+    console.log("model", model.datasetIds);
+    const datasetIds = model?.datasetIds?.split(",") || [];
+    const datasetUrls = [];
+    for (const datasetId of datasetIds) {
+      const dataset = await db.dataset.get(datasetId);
+      datasetUrls.push(dataset?.downloadUrl);
+    }
+    return json({ model, datasetUrls });
   } catch (error) {
     return new Response("Internal Server Error", { status: 500 });
   }

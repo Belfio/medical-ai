@@ -1,28 +1,63 @@
-import React from "react";
+import React, { useEffect } from "react";
 import AceEditor from "react-ace";
 
 // Import a theme and mode for Python
 import "ace-builds/src-noconflict/mode-python";
 import "ace-builds/src-noconflict/theme-github";
 
-const defaultCode = `
-import openai
+const defaultCode = (
+  datasetUrl: string = "DATA_URL",
+  repoUrl: string = "REPO_URL",
+  repoName: string = "REPO_NAME"
+) => `# Mount Google Drive
+from google.colab import drive
+drive.mount('/content/drive')
 
-openai.api_key = "sk-proj-1234567890"
+# Clone the GitHub repository and enter the directory
+!git clone ${repoUrl}
+%cd ${repoName}
 
-response = openai.Completion.create(
-  engine="text-davinci-003",
-  prompt="Hello, how are you?",
-  max_tokens=50
+# Install any dependencies (if a requirements.txt file is present)
+!pip install -r requirements.txt
 
-)
+# Load the dataset, download a dataset from a URL
+!wget -O dataset.csv ${datasetUrl}
+
+# Import necessary libraries and load the dataset into a DataFrame
+import pandas as pd
+data = pd.read_csv('dataset.csv')
+
+# Run the model training script
+# This assumes there is a script named 'train_model.py' in the repository
+!python train_model.py
+
+
+testSet = dataset.load_data()
+result = model.run(testSet)
+
+accuracy = repo.evaluate(result, testSet)
+
+
+
+
 `;
-const PythonEditor = () => {
-  const [code, setCode] = React.useState<string>(defaultCode);
+const PythonEditor = ({
+  datasetUrl,
+  repoUrl,
+  repoName,
+}: {
+  datasetUrl: string;
+  repoUrl: string;
+  repoName: string;
+}) => {
+  const [code, setCode] = React.useState<string>("");
 
   const handleChange = (newCode: string) => {
     setCode(newCode);
   };
+  useEffect(() => {
+    setCode(defaultCode(datasetUrl, repoUrl, repoName));
+  }, [datasetUrl, repoUrl, repoName]);
 
   return (
     <AceEditor
