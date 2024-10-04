@@ -1,9 +1,6 @@
 import React, { useEffect } from "react";
-import AceEditor from "react-ace";
-
-// Import a theme and mode for Python
-import "ace-builds/src-noconflict/mode-python";
-import "ace-builds/src-noconflict/theme-github";
+import CodeMirror from "@uiw/react-codemirror";
+import { python } from "@codemirror/lang-python";
 
 const defaultCode = (
   datasetUrl: string = "DATA_URL",
@@ -52,27 +49,16 @@ const PythonEditor = ({
 }) => {
   const [code, setCode] = React.useState<string>("");
 
-  const handleChange = (newCode: string) => {
-    setCode(newCode);
-  };
   useEffect(() => {
     setCode(defaultCode(datasetUrl, repoUrl, repoName));
   }, [datasetUrl, repoUrl, repoName]);
 
   return (
-    <AceEditor
-      mode="python"
-      theme="github"
-      name="python_editor"
-      onChange={handleChange}
+    <CodeMirror
       value={code}
-      editorProps={{ $blockScrolling: true }}
-      setOptions={{
-        enableBasicAutocompletion: true,
-        enableLiveAutocompletion: true,
-        enableSnippets: true,
-      }}
-      style={{ width: "100%", height: "400px" }}
+      height="200px"
+      extensions={[python()]}
+      onChange={setCode}
     />
   );
 };

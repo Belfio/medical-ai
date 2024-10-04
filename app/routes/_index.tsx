@@ -32,11 +32,11 @@ export default function Index() {
         diseases.
       </p>
       <h2 className="mt-8 mb-2">How it works ⚙️</h2>
-      <ol className="">
+      <ol className="max-w-screen-md w-full">
         <li>
           <Link
             to="/diseases"
-            className="flex gap-2 border-dark  justify-start items-center hover:bg-accent transition duration-300 ease-in-out w-fit p-1 rounded-sm"
+            className="flex gap-2 border-dark  w-fulljustify-start items-center w-fit p-1 rounded-sm"
           >
             <div className="p-2 px-4 rounded-full  border-2 border-dark flex items-center justify-center">
               <p>1</p>
@@ -50,7 +50,7 @@ export default function Index() {
         <li>
           <Link
             to="/models/add"
-            className="flex  gap-2 border-dark   justify-start items-center mt-2 hover:bg-accent transition duration-300 ease-in-out w-fit p-1 rounded-sm"
+            className="flex  gap-2 border-dark  w-full  justify-start items-center mt-2  p-1 rounded-sm"
           >
             <div className="p-2 px-4 rounded-full  border-2 border-dark flex items-center justify-center">
               <p>2</p>
@@ -64,7 +64,7 @@ export default function Index() {
         <li>
           <Link
             to="/leaderboard"
-            className="flex  gap-2 border-dark  justify-start items-center mt-2 hover:bg-accent transition duration-300 ease-in-out w-fit p-1 rounded-sm"
+            className="flex  gap-2 border-dark  w-full justify-start items-center mt-2 p-1 rounded-sm"
           >
             <div className="p-2 px-4 rounded-full  border-2 border-dark flex items-center justify-center">
               <p>3</p>
