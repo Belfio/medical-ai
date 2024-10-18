@@ -29,7 +29,6 @@ export default function ModelAdd() {
     <div className="flex flex-col gap-4 max-w-[540px]">
       <h1>Upload your model</h1>
 
-      <input type="hidden" name="stogazzo" value="poba" />
       {error && error.error && <p className="text-red-500">{error.error}</p>}
       {error && error.missingFields && (
         <p className="text-red-500">

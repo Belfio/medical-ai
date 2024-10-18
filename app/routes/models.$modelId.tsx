@@ -6,17 +6,27 @@ import {
 } from "@remix-run/node";
 import { Form, Link, useLoaderData } from "@remix-run/react";
 import { Trash } from "lucide-react";
+import { useState } from "react";
 import PythonEditor from "~/components/PythonEditor";
 import { Button } from "~/components/ui/button";
 import db from "~/lib/db";
 import { ModelType } from "~/lib/types";
+import {
+  getUrl,
+  listFiles,
+  uploadFile,
+  uploadFileFromS3,
+} from "~/server/googleApi.server";
 import ds from "~/server/model.server";
+import s3 from "~/lib/s3";
+import { pyToNotebook } from "~/lib/utils";
 
 export default function ModelPage() {
   const { model, datasetUrls } = useLoaderData<{
     model: ModelType;
     datasetUrls: string[];
   }>();
+  const [script, setScript] = useState<string>("");
 
   if (!model) {
     return <>Something went wrong</>;
@@ -60,11 +70,24 @@ export default function ModelPage() {
           datasetUrl={datasetUrls[0]}
           repoUrl={model.website}
           repoName={model.name}
+          setScript={setScript}
         />
       </div>
       <Form method="POST" className="flex gap-2 justify-end max-w-screen-md ">
-        <Button name="action" value="testing">
+        <Button name="action" value="submit">
           Submit
+        </Button>
+        <input type="hidden" name="script" value={script} />
+        <input type="hidden" name="modelId" value={model.modelId} />
+        <input type="hidden" name="repoName" value={model.name} />
+        <Button name="action" value="listFiles">
+          List files
+        </Button>
+        <Button name="action" value="upload">
+          Upload file
+        </Button>
+        <Button name="action" value="access">
+          Access
         </Button>
         <input type="hidden" name="modelId" value={model.modelId} />
       </Form>
@@ -89,6 +112,40 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     const s3Path = modelId + "/" + "prova.ipynb";
     console.log("s3Path", s3Path);
     await ds.testModel(s3Path);
+  }
+  if (action === "submit") {
+    console.log("submitting model");
+    // take the code in the editor and save it in a file
+    const script = formData.get("script");
+    const modelId = formData.get("modelId");
+    const repoName = formData.get("repoName");
+
+    console.log("code", script);
+    // then take the file and save it in the google drive
+    //filename is "userId+the github name"
+    const fileName = `${modelId}-${repoName}.ipynb`;
+    const s3Path = modelId + "/" + fileName;
+    const notebook = pyToNotebook(script as string);
+    const stream = s3.lib.stringToAsyncIterable(notebook as string);
+    await s3.models.upload(stream, s3Path, "application/x-ipynb+json");
+    // upload script to S3 and then to Colab
+    await uploadFileFromS3(s3Path);
+  }
+  if (action === "listFiles") {
+    const files = await listFiles();
+    console.log("files", files);
+  }
+  if (action === "upload") {
+    // create the file
+
+    // upload it to drive
+    // const files = await uploadFile(file);
+    console.log("files", files);
+  }
+  if (action === "access") {
+    const fileId = formData.get("fileId");
+    const file = await getUrl(fileId as string);
+    console.log("file", file);
   }
   return redirect(`/models/${modelId}`);
 };

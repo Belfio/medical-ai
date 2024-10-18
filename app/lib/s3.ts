@@ -117,6 +117,17 @@ const deleteObjectFromS3 = async (key: string, bucketName: string) => {
   return { isSuccess: true, msg: "deleted" };
 };
 
+async function* stringToAsyncIterable(
+  str: string,
+  chunkSize: number = 64 * 1024
+): AsyncIterable<Uint8Array> {
+  const encoder = new TextEncoder();
+  const uint8array = encoder.encode(str);
+  for (let i = 0; i < uint8array.length; i += chunkSize) {
+    yield uint8array.subarray(i, i + chunkSize);
+  }
+}
+
 const s3 = {
   datasets: {
     upload: (
@@ -137,6 +148,9 @@ const s3 = {
     getStream: (key: string) => getStreamFromS3(key, Resource.ModelBucket.name),
     getSize: (key: string) => getSize(key, Resource.ModelBucket.name),
     delete: (key: string) => deleteObjectFromS3(key, Resource.ModelBucket.name),
+  },
+  lib: {
+    stringToAsyncIterable: (str: string) => stringToAsyncIterable(str),
   },
 };
 
